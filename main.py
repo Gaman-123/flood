@@ -30,8 +30,8 @@ def export_results_json(flood_df, graph, final_routes, hospitals):
             route_coords = [[graph.nodes[n]['y'], graph.nodes[n]['x']] for n in route_nodes]
             
             # Calculate stats
-            dist_km = sum(graph[route_nodes[i]][route_nodes[i+1]][0].get('length_km', 0) for i in range(len(route_nodes)-1))
-            avg_risk = sum(graph[route_nodes[i]][route_nodes[i+1]][0].get('risk', 0) for i in range(len(route_nodes)-1)) / len(route_nodes)
+            dist_km = sum(graph[route_nodes[i]][route_nodes[i+1]].get('length_km', 0) for i in range(len(route_nodes)-1))
+            avg_risk = sum(graph[route_nodes[i]][route_nodes[i+1]].get('risk', 0) for i in range(len(route_nodes)-1)) / len(route_nodes)
             
             results["ambulances"].append({
                 "id": amb,
@@ -86,7 +86,7 @@ def create_map(flood_df, graph, final_routes):
             popup=f"Risk: {row['final_risk']:.2f}<br>Category: {row['risk_category']}"
         ).add_to(m)
         
-    for u, v, k, data in graph.edges(keys=True, data=True):
+    for u, v, data in graph.edges(data=True):
         risk = data.get('risk', 0.0)
         
         if risk > 0.6:

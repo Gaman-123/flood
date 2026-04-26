@@ -158,7 +158,7 @@ class QUBOOptimizer:
                 continue
             path = self.candidates_dict[amb][p_idx]
             
-            cost = sum(min(self.G[path[i]][path[i+1]].values(), key=lambda d: d.get('weight', 9999))['weight'] for i in range(len(path)-1))
+            cost = sum(self.G[path[i]][path[i+1]]['weight'] for i in range(len(path)-1))
             total_cost += cost
             
             for i in range(len(path)-1):
