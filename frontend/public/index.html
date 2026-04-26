@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zora :: Flood Routing Systems</title>
+    <meta name="description" content="AI-Powered Flood-Aware Ambulance Routing for Mangalore">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="blob-c">
+        <div class="shape-blob one"></div>
+        <div class="shape-blob two"></div>
+        <div class="shape-blob three"></div>
+    </div>
+    
+    <div class="container glass">
+        <header>
+            <div class="logo">
+                <div class="logo-icon"></div>
+                <h1>FloodRoute AI <span>City of Mangalore</span></h1>
+            </div>
+            
+            <div class="header-stats">
+                <div class="stat-bubble">
+                    <span class="label">Spatio-Temporal Status</span>
+                    <span class="val pulse">Active</span>
+                </div>
+                <div class="stat-bubble">
+                    <span class="label">Last Refresh</span>
+                    <span class="val" id="time-display">Now</span>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <h3>Pipeline Metrics</h3>
+                    <ul class="metric-list">
+                        <li>
+                            <div class="icon">🌊</div>
+                            <div class="info">
+                                <span>Global Temp. Risk (LSTM)</span>
+                                <strong>0.0123</strong>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="icon">🌧️</div>
+                            <div class="info">
+                                <span>Live Precip (OWM)</span>
+                                <strong id="live-rain">-- mm</strong>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="icon">📈</div>
+                            <div class="info">
+                                <span>Live Sea Level (Tide)</span>
+                                <strong id="live-sea">-- m</strong>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="icon">🛶</div>
+                            <div class="info">
+                                <span>River Discharge (CWC)</span>
+                                <strong id="live-river">-- m³/s</strong>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="icon">📍</div>
+                            <div class="info">
+                                <span>Live OSMnx Grid (3km² bounding)</span>
+                                <strong>3009 Nodes / 7093 Edges</strong>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3>Fleet Configuration</h3>
+
+                    <div class="amb-count-control">
+                        <div class="amb-count-header">
+                            <span>Ambulance Fleet</span>
+                            <span class="amb-count-badge" id="amb-count-label">2 Units</span>
+                        </div>
+                        <div class="slider-wrapper">
+                            <span class="slider-min">1</span>
+                            <input type="range" id="amb-count" min="1" max="6" value="2" class="count-slider" oninput="updateAmbCount(this.value)">
+                            <span class="slider-max">6</span>
+                        </div>
+                    </div>
+
+                    <div class="feed-toggle" style="margin-top: 1.5rem;">
+                        <label>
+                            <input type="radio" name="feed-mode" value="default" checked onchange="toggleInputs()"> 
+                            Default System Generation
+                        </label>
+                        <br>
+                        <label>
+                            <input type="radio" name="feed-mode" value="custom" onchange="toggleInputs()"> 
+                            Hive Self-Feed (Custom Coordinates)
+                        </label>
+                    </div>
+
+                    <div id="custom-inputs" style="display: none; margin-top: 15px;">
+                        <!-- Filled dynamically by JS -->
+                    </div>
+                </div>
+                
+                <button class="run-btn" id="run-pipeline-btn">
+                    <span class="run-icon">▶</span> Run QUBO Optimizer
+                </button>
+            </aside>
+            
+            <section class="map-view">
+                <div class="iframe-wrapper">
+                    <!-- Serving the generated python map here -->
+                    <iframe src="/map" id="map-frame" frameborder="0"></iframe>
+                    <div class="loader-overlay" id="loader">
+                        <div class="spinner"></div>
+                        <p>Optimizing Neural Paths...</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

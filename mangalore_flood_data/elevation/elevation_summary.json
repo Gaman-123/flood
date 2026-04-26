@@ -1,0 +1,26 @@
+{
+  "dataset": "DEM - Mangalore (SRTM 30m)",
+  "source": "NASA SRTM / USGS EarthExplorer",
+  "download_url": "https://earthexplorer.usgs.gov/",
+  "product": "SRTM 1 Arc-Second Global (30m)",
+  "tile": "N12E074",
+  "bounding_box": {
+    "lat_min": 12.82,
+    "lat_max": 12.93,
+    "lon_min": 74.81,
+    "lon_max": 74.91
+  },
+  "resolution_m": 30,
+  "stats": {
+    "min_elevation_m": 0.0,
+    "max_elevation_m": 210.4,
+    "mean_elevation_m": 98.36,
+    "total_grid_points": 6150,
+    "flood_risk_zones": {
+      "LOW": 5589,
+      "MEDIUM": 351,
+      "HIGH": 210
+    },
+    "high_risk_pct": 3.4
+  }
+}

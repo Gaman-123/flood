@@ -1,0 +1,15 @@
+{
+  "total_capacity_m3s": 167.6,
+  "peak_flow_m3s": 100.1,
+  "avg_utilization_pct": 63.4,
+  "poor_condition_drains": 3,
+  "high_overflow_risk": 1,
+  "drains_by_type": {
+    "secondary": 4,
+    "primary": 3,
+    "tertiary": 2,
+    "coastal": 1,
+    "industrial": 1,
+    "natural_channel": 1
+  }
+}

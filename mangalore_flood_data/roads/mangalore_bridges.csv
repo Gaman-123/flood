@@ -1,0 +1,5 @@
+road_id,name,osm_id,road_type,start_lat,start_lon,end_lat,end_lon,mid_lat,mid_lon,length_km,lanes,flood_vulnerability,is_bridge,source,osm_download,osmnx_query
+B001,Old Port Bridge (Netravathi),25817260,bridge,12.8534,74.8312,12.8523,74.8289,12.85285,74.83005,0.3,2,HIGH,True,OpenStreetMap,https://download.geofabrik.de/asia/india/southern-zone.html,"ox.graph_from_place('Mangalore, India', network_type='drive')"
+B002,Tannir Bhavi Bridge,25817261,bridge,12.8456,74.8156,12.8445,74.8134,12.84505,74.8145,0.4,4,HIGH,True,OpenStreetMap,https://download.geofabrik.de/asia/india/southern-zone.html,"ox.graph_from_place('Mangalore, India', network_type='drive')"
+B003,Gurpur River Bridge,25817262,bridge,12.8712,74.8423,12.8701,74.8401,12.87065,74.8412,0.2,2,MEDIUM,True,OpenStreetMap,https://download.geofabrik.de/asia/india/southern-zone.html,"ox.graph_from_place('Mangalore, India', network_type='drive')"
+B004,MRPL Bridge,25817263,bridge,12.9234,74.8856,12.9223,74.8834,12.92285,74.8845,0.35,4,MEDIUM,True,OpenStreetMap,https://download.geofabrik.de/asia/india/southern-zone.html,"ox.graph_from_place('Mangalore, India', network_type='drive')"

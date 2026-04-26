@@ -1,0 +1,22 @@
+{
+  "dataset": "Rainfall - Mangalore",
+  "source": "OpenWeatherMap API (simulated realistic data)",
+  "location": {
+    "city": "Mangalore",
+    "lat": 12.8698,
+    "lon": 74.8431
+  },
+  "period": {
+    "start": "2024-06-01T00:00:00",
+    "end": "2024-06-30T23:40:00"
+  },
+  "interval_minutes": 20,
+  "total_records": 2160,
+  "stats": {
+    "total_rain_mm": 8262.62,
+    "max_1h_rain_mm": 47.76,
+    "avg_1h_rain_mm": 3.825,
+    "heavy_rain_events": 135,
+    "extreme_events": 59
+  }
+}

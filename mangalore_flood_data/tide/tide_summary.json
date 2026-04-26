@@ -1,0 +1,20 @@
+{
+  "dataset": "Tide Data - Mangalore Port",
+  "source": "WorldTides API (simulated)",
+  "api_url": "https://www.worldtides.info/api/v3",
+  "location": {
+    "station": "Mangalore_Port",
+    "lat": 12.8698,
+    "lon": 74.8431
+  },
+  "tide_type": "Semi-diurnal (Arabian Sea)",
+  "stats": {
+    "max_tide_m": 2.448,
+    "min_tide_m": 0.168,
+    "mean_tide_m": 1.2,
+    "tidal_range_m": 2.28,
+    "max_storm_surge_m": 0.192,
+    "high_tide_events": 61,
+    "total_records": 1440
+  }
+}

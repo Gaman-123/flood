@@ -1,0 +1,13 @@
+drain_id,name,drain_type,latitude,longitude,length_m,design_capacity_m3s,current_flow_m3s,peak_flow_m3s,utilization_pct,connects_to,condition,overflow_risk,sediment_blockage,last_maintained,source
+D001,Netravathi Outfall Channel,primary,12.8534,74.8301,2100,45.0,5.76,22.7,50.4,Netravathi River,GOOD,LOW,False,2023-11-01,Derived from DEM + OSM + Mangalore City Corporation data
+D002,Gurpur Outfall Drain,primary,12.8698,74.8389,1800,32.0,7.85,19.5,60.9,Gurpur River,GOOD,LOW,False,2023-11-01,Derived from DEM + OSM + Mangalore City Corporation data
+D003,CBD Storm Drain,primary,12.8678,74.8434,1200,18.5,4.8,12.34,66.7,D001,FAIR,LOW,False,2022-06-01,Derived from DEM + OSM + Mangalore City Corporation data
+D004,Kankanady Secondary Drain,secondary,12.8834,74.8712,850,8.2,2.94,6.13,74.7,D002,FAIR,LOW,False,2022-06-01,Derived from DEM + OSM + Mangalore City Corporation data
+D005,Bendoor Secondary Drain,secondary,12.8856,74.8523,720,6.5,0.86,3.04,46.8,D003,POOR,MEDIUM,True,2022-06-01,Derived from DEM + OSM + Mangalore City Corporation data
+D006,Bejai Secondary Drain,secondary,12.8756,74.8634,680,5.8,0.67,2.38,41.0,D002,FAIR,LOW,False,2022-06-01,Derived from DEM + OSM + Mangalore City Corporation data
+D007,Attavar Drain,secondary,12.8623,74.8567,560,4.2,0.43,1.4,33.3,D001,POOR,MEDIUM,True,2022-06-01,Derived from DEM + OSM + Mangalore City Corporation data
+D008,Old Town Drain (Colonial-era),tertiary,12.8656,74.8412,340,1.8,0.62,1.8,100.0,D003,POOR,HIGH,True,2022-06-01,Derived from DEM + OSM + Mangalore City Corporation data
+D009,Lighthouse Hill Drain,tertiary,12.8723,74.8334,280,2.1,0.83,2.1,100.0,D003,GOOD,MEDIUM,False,2023-11-01,Derived from DEM + OSM + Mangalore City Corporation data
+D010,Tannir Bhavi Coastal Drain,coastal,12.8423,74.8256,950,12.0,2.47,9.22,76.8,Arabian Sea,FAIR,LOW,False,2022-06-01,Derived from DEM + OSM + Mangalore City Corporation data
+D011,Port Area Storm Drain,industrial,12.8512,74.8212,1400,22.0,4.82,15.84,72.0,Netravathi River,GOOD,LOW,False,2023-11-01,Derived from DEM + OSM + Mangalore City Corporation data
+D012,Kadri Nala,natural_channel,12.8812,74.8623,760,9.5,1.01,3.65,38.4,Gurpur River,FAIR,LOW,False,2022-06-01,Derived from DEM + OSM + Mangalore City Corporation data

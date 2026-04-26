@@ -1,0 +1,2 @@
+drain_id,name,drain_type,latitude,longitude,length_m,design_capacity_m3s,current_flow_m3s,peak_flow_m3s,utilization_pct,connects_to,condition,overflow_risk,sediment_blockage,last_maintained,source
+D008,Old Town Drain (Colonial-era),tertiary,12.8656,74.8412,340,1.8,0.62,1.8,100.0,D003,POOR,HIGH,True,2022-06-01,Derived from DEM + OSM + Mangalore City Corporation data

@@ -1,0 +1,231 @@
+{
+  "project": "Mangalore Flood Prediction System - Dataset Collection",
+  "version": "1.0",
+  "created": "2026-03-30T13:36:02.907065",
+  "location": {
+    "city": "Mangalore (Mangaluru)",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "lat": 12.8698,
+      "lon": 74.8431
+    },
+    "bounding_box": {
+      "lat_min": 12.8,
+      "lat_max": 12.93,
+      "lon_min": 74.81,
+      "lon_max": 74.91
+    }
+  },
+  "datasets": [
+    {
+      "id": 1,
+      "name": "Rainfall Data",
+      "folder": "rainfall/",
+      "files": [
+        "mangalore_rainfall_30days.csv",
+        "rainfall_summary.json"
+      ],
+      "records": 2160,
+      "interval": "20 minutes",
+      "period": "30 days (June 2024 monsoon)",
+      "fields": [
+        "timestamp",
+        "rain_1h_mm",
+        "rain_3h_mm",
+        "rain_24h_mm",
+        "humidity_pct",
+        "temp_celsius",
+        "wind_speed_ms",
+        "pressure_hpa"
+      ],
+      "real_api": {
+        "provider": "OpenWeatherMap",
+        "url": "https://openweathermap.org/api",
+        "endpoint": "https://api.openweathermap.org/data/2.5/weather?lat=12.8698&lon=74.8431&appid={KEY}",
+        "plan": "Free tier available, paid for history",
+        "key_param": "rain.1h, rain.3h"
+      },
+      "status": "SIMULATED - Replace with real OWM API calls"
+    },
+    {
+      "id": 2,
+      "name": "Tide / Sea Level Data",
+      "folder": "tide/",
+      "files": [
+        "mangalore_tide_30days.csv",
+        "mangalore_tidal_events.csv",
+        "tide_summary.json"
+      ],
+      "records": 1440,
+      "interval": "30 minutes",
+      "period": "30 days",
+      "fields": [
+        "timestamp",
+        "tide_height_m",
+        "storm_surge_m",
+        "total_water_level_m",
+        "tide_type"
+      ],
+      "real_api": {
+        "provider": "WorldTides",
+        "url": "https://www.worldtides.info/api/v3",
+        "endpoint": "https://www.worldtides.info/api/v3?heights&lat=12.8698&lon=74.8431&key={KEY}",
+        "plan": "Paid API - ~$10/month",
+        "free_alternative": "NOAA Tides: https://tidesandcurrents.noaa.gov/api/"
+      },
+      "status": "SIMULATED - Replace with WorldTides API calls"
+    },
+    {
+      "id": 3,
+      "name": "River Level Data",
+      "folder": "river/",
+      "files": [
+        "mangalore_river_levels.csv",
+        "mangalore_river_geometry.json"
+      ],
+      "records": 2880,
+      "rivers": [
+        "Netravathi",
+        "Gurpur (Phalguni)",
+        "Shambhavi",
+        "Nandini"
+      ],
+      "interval": "1 hour",
+      "period": "30 days",
+      "fields": [
+        "timestamp",
+        "river_id",
+        "river_name",
+        "water_level_m",
+        "discharge_cumecs",
+        "flood_status"
+      ],
+      "simulation_formula": "river_level = rain * 0.6 + upstream_rain * 0.4",
+      "real_source": {
+        "agency": "Central Water Commission (CWC) India",
+        "url": "https://cwc.gov.in/",
+        "data_portal": "https://indiawris.gov.in/wris/",
+        "osm_rivers": "https://download.geofabrik.de/asia/india/southern-zone.html"
+      },
+      "status": "SIMULATED with realistic formula"
+    },
+    {
+      "id": 4,
+      "name": "Elevation / DEM",
+      "folder": "elevation/",
+      "files": [
+        "mangalore_dem_150m.csv",
+        "mangalore_flood_zones_lt5m.csv",
+        "elevation_summary.json"
+      ],
+      "records": 6150,
+      "resolution": "150m (downsampled from 30m SRTM)",
+      "fields": [
+        "latitude",
+        "longitude",
+        "elevation_m",
+        "slope_deg",
+        "aspect_deg",
+        "flood_risk_zone"
+      ],
+      "real_source": {
+        "provider": "NASA SRTM",
+        "resolution": "30m (1 arc-second)",
+        "download": "https://earthexplorer.usgs.gov/",
+        "tile": "N12E074",
+        "product": "SRTM 1 Arc-Second Global",
+        "alternative": "ALOS DEM 12.5m via ASF: https://search.asf.alaska.edu/"
+      },
+      "status": "SIMULATED - Download real SRTM from USGS EarthExplorer"
+    },
+    {
+      "id": 5,
+      "name": "Road Network",
+      "folder": "roads/",
+      "files": [
+        "mangalore_roads.csv",
+        "mangalore_bridges.csv",
+        "mangalore_roads.geojson"
+      ],
+      "records": 16,
+      "road_types": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "residential",
+        "bridge"
+      ],
+      "fields": [
+        "road_id",
+        "name",
+        "road_type",
+        "start_lat",
+        "start_lon",
+        "end_lat",
+        "end_lon",
+        "length_km",
+        "flood_vulnerability"
+      ],
+      "real_source": {
+        "provider": "OpenStreetMap",
+        "download": "https://download.geofabrik.de/asia/india/southern-zone.html",
+        "python_code": "import osmnx as ox; G = ox.graph_from_place('Mangalore, India', network_type='drive')",
+        "overpass_api": "https://overpass-turbo.eu/"
+      },
+      "status": "SIMULATED - Use osmnx to get real road network"
+    },
+    {
+      "id": 6,
+      "name": "Drainage Network",
+      "folder": "drainage/",
+      "files": [
+        "mangalore_drainage_network.csv",
+        "mangalore_high_risk_drains.csv",
+        "drainage_summary.json"
+      ],
+      "records": 12,
+      "drain_types": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "coastal",
+        "industrial",
+        "natural_channel"
+      ],
+      "fields": [
+        "drain_id",
+        "name",
+        "drain_type",
+        "design_capacity_m3s",
+        "overflow_risk",
+        "condition"
+      ],
+      "derivation": "Derived from DEM (flow accumulation) + OSM waterways + city corporation data",
+      "real_source": {
+        "osm_query": "waterway=drain OR waterway=ditch in Mangalore",
+        "city_data": "Mangalore City Corporation (MCGM) GIS department",
+        "dem_tool": "SAGA GIS or QGIS for flow accumulation from DEM"
+      },
+      "status": "SIMULATED - Derive from DEM using QGIS/SAGA flow analysis"
+    }
+  ],
+  "integration_notes": {
+    "flood_model_inputs": [
+      "rain_1h_mm + rain_3h_mm -> short-term surface runoff",
+      "tide_height_m + storm_surge_m -> coastal backwater effect",
+      "water_level_m (rivers) -> riparian flooding",
+      "elevation_m < 5 -> inundation risk zones",
+      "drain utilization_pct > 80 -> urban flooding",
+      "bridge roads + low-lying roads -> connectivity analysis"
+    ],
+    "recommended_update_frequency": {
+      "rainfall": "every 10-20 minutes",
+      "tide": "every 30 minutes",
+      "river": "every 1 hour",
+      "elevation": "static (update annually)",
+      "roads": "static (update quarterly)",
+      "drainage": "static (update after maintenance)"
+    }
+  }
+}
