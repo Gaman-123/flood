@@ -4,22 +4,78 @@ from data_pipeline import DataPipeline
 from flood_models import FloodSpatialModel, FloodTemporalModel, FloodFuser
 from routing_engine import GraphBuilder, SVPCandidateGenerator, QUBOOptimizer
 import os
+import json
+import argparse
+import osmnx as ox
+import networkx as nx
+from datetime import datetime
+
+def export_results_json(flood_df, graph, final_routes, hospitals):
+    print("Exporting results to JSON for frontend...")
+    
+    # 1. Routes and Stats
+    results = {
+        "status": "success",
+        "timestamp": datetime.now().isoformat(),
+        "ambulances": [],
+        "hospitals": hospitals,
+        "flood_zones": []
+    }
+    
+    colors = ['cyan', 'yellow', 'magenta', 'lime', 'orange', 'white']
+    color_idx = 0
+    
+    for amb, route_nodes in final_routes.items():
+        if route_nodes:
+            route_coords = [[graph.nodes[n]['y'], graph.nodes[n]['x']] for n in route_nodes]
+            
+            # Calculate stats
+            dist_km = sum(graph[route_nodes[i]][route_nodes[i+1]][0].get('length_km', 0) for i in range(len(route_nodes)-1))
+            avg_risk = sum(graph[route_nodes[i]][route_nodes[i+1]][0].get('risk', 0) for i in range(len(route_nodes)-1)) / len(route_nodes)
+            
+            results["ambulances"].append({
+                "id": amb,
+                "color": colors[color_idx % len(colors)],
+                "path": route_coords,
+                "hops": len(route_nodes),
+                "distance_km": round(dist_km, 2),
+                "avg_risk": round(avg_risk, 2),
+                "status": "ready"
+            })
+            color_idx += 1
+        else:
+            results["ambulances"].append({
+                "id": amb,
+                "status": "not_found"
+            })
+            
+    # 2. Significant Flood Zones (only Moderate/High)
+    for _, row in flood_df.iterrows():
+        if row['risk_category'] in ['Moderate', 'High']:
+            results["flood_zones"].append({
+                "lat": row['lat'],
+                "lon": row['lon'],
+                "risk": round(row['final_risk'], 2),
+                "category": row['risk_category']
+            })
+            
+    output_path = os.path.join("frontend", "public", "results.json")
+    with open(output_path, 'w') as f:
+        json.dump(results, f)
+    print(f"Saved {output_path}")
 
 def create_map(flood_df, graph, final_routes):
     print("Generating Folium Map visualization...")
     mangalore_coords = [12.8698, 74.8431]
     m = folium.Map(location=mangalore_coords, zoom_start=12, tiles='CartoDB dark_matter')
     
-    # 1. Plot Rivers removed - coarse dataset was interfering with CartoDB's native water masking.
-
-    # 2. Plot Flood Grid Nodes (Exclude Safe / Green Nodes)
     for _, row in flood_df.iterrows():
         if row['risk_category'] == 'High':
             color = 'red'
         elif row['risk_category'] == 'Moderate':
             color = 'orange'
         else:
-            continue # Skip safe areas to avoid map clutter!
+            continue 
             
         folium.Circle(
             location=[row['lat'], row['lon']],
@@ -30,7 +86,6 @@ def create_map(flood_df, graph, final_routes):
             popup=f"Risk: {row['final_risk']:.2f}<br>Category: {row['risk_category']}"
         ).add_to(m)
         
-    # 3. Plot Roads Grid Links
     for u, v, k, data in graph.edges(keys=True, data=True):
         risk = data.get('risk', 0.0)
         
@@ -45,7 +100,7 @@ def create_map(flood_df, graph, final_routes):
         else:
             edge_color = 'white'
             weight_val = 0.5
-            opac_val = 0.15  # Make safe roads a subtle background mesh!
+            opac_val = 0.15 
             
         u_coord = [graph.nodes[u]['y'], graph.nodes[u]['x']]
         v_coord = [graph.nodes[v]['y'], graph.nodes[v]['x']]
@@ -58,12 +113,10 @@ def create_map(flood_df, graph, final_routes):
             popup=f"Risk {risk:.2f}"
         ).add_to(m)
 
-    # 3. Plot Final Selected Routes for Ambulances
-    colors = ['cyan', 'yellow', 'magenta', 'lime']
+    colors = ['cyan', 'yellow', 'magenta', 'lime', 'orange', 'white']
     color_idx = 0
     for amb, route_nodes in final_routes.items():
         if route_nodes:
-            # Route nodes are OSM node IDs. Convert to [lat, lon]
             route_coords = [[graph.nodes[n]['y'], graph.nodes[n]['x']] for n in route_nodes]
             
             folium.PolyLine(
@@ -74,7 +127,6 @@ def create_map(flood_df, graph, final_routes):
                 tooltip=f"{amb} Optimized Route"
             ).add_to(m)
             
-            # Start and End Markers
             folium.Marker(route_coords[0], popup=f"{amb} Start", icon=folium.Icon(color='green')).add_to(m)
             folium.Marker(route_coords[-1], popup=f"{amb} End", icon=folium.Icon(color='red')).add_to(m)
             color_idx += 1
@@ -109,13 +161,8 @@ def run_pipeline():
     gb = GraphBuilder(flood_map_path="flood_map.csv")
     G = gb.build_graph()
     
-    import argparse
-    import osmnx as ox
-    import networkx as ox_nx
-
     parser = argparse.ArgumentParser()
     parser.add_argument('--amb_count', type=int, default=2, help='Number of ambulances')
-    # Accept up to 10 ambulance coordinate pairs
     for _i in range(1, 11):
         parser.add_argument(f'--amb{_i}', type=str, default=None)
     args = parser.parse_args()
@@ -123,12 +170,13 @@ def run_pipeline():
     N = args.amb_count
 
     # Largest strongly connected component for routing
-    largest_cc = max(ox_nx.strongly_connected_components(G), key=len)
+    largest_cc = max(nx.strongly_connected_components(G), key=len)
     G_sub = G.subgraph(largest_cc).copy()
     nodes_sub = list(G_sub.nodes())
 
     def parse_coords(arg_str):
         parts = list(map(float, arg_str.split(',')))
+        # Format: start_lat,start_lon,end_lat,end_lon
         start_node = ox.distance.nearest_nodes(G_sub, X=parts[1], Y=parts[0])
         end_node   = ox.distance.nearest_nodes(G_sub, X=parts[3], Y=parts[2])
         return start_node, end_node
@@ -150,12 +198,12 @@ def run_pipeline():
 
     gen = SVPCandidateGenerator(G_sub)
     dict_cands = {
-        amb_id: gen.generate_candidates(src, tgt, num_candidates=3)
+        amb_id: gen.generate_candidates(src, tgt, num_candidates=5)
         for amb_id, (src, tgt) in ambulances.items()
     }
 
-    qubo = QUBOOptimizer(G, list(ambulances.keys()), dict_cands)
-    best_routes = qubo.optimize(pop_size=20, gens=50)
+    qubo = QUBOOptimizer(G_sub, list(ambulances.keys()), dict_cands)
+    best_routes = qubo.optimize(pop_size=30, gens=60)
 
     print(f"\n[FINAL RESULTS] Optimal Routes ({N} ambulances)")
     for a, r in best_routes.items():
@@ -164,8 +212,9 @@ def run_pipeline():
         else:
             print(f"  {a}: No feasible path.")
 
-    # 4. Map Generation
+    # 4. Map and Data Export
     create_map(flood_map, G, best_routes)
+    export_results_json(flood_map, G, best_routes, dp.hospitals)
     print("\n=== PIPELINE SUCCESSFUL ===")
 
 if __name__ == "__main__":

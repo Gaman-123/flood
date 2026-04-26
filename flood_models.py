@@ -12,7 +12,7 @@ import os
 class FloodSpatialModel:
     def __init__(self, data_path="feature_vectors.csv"):
         self.data_path = data_path
-        self.model = xgb.XGBClassifier(use_label_encoder=False, eval_metric='logloss', objective='binary:logistic')
+        self.model = xgb.XGBClassifier(eval_metric='logloss', objective='binary:logistic')
         
     def train(self):
         print("Training Spatial Risk Model (XGBoost)...")

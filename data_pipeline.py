@@ -5,6 +5,7 @@ import math
 from pathlib import Path
 import os
 from datetime import datetime
+import osmnx as ox
 
 class DataPipeline:
     def __init__(self, data_dir="mangalore_flood_data"):
@@ -66,7 +67,36 @@ class DataPipeline:
         # River geometry
         with open(self.data_dir / "river/mangalore_river_geometry.json", 'r') as f:
             self.rivers_data = json.load(f)
+
+        # Hospitals (new) - Try to fetch from OSM or use fallback
+        self.hospitals = self.fetch_hospitals()
             
+    def fetch_hospitals(self):
+        print("Fetching hospital locations from OSM...")
+        try:
+            # Search for hospitals in Mangalore
+            tags = {"amenity": "hospital"}
+            hospitals_gdf = ox.features_from_point((12.8698, 74.8431), tags, dist=5000)
+            hospitals_list = []
+            for _, row in hospitals_gdf.iterrows():
+                if row.geometry.geom_type == 'Point':
+                    hospitals_list.append({"name": row.get('name', 'Hospital'), "lat": row.geometry.y, "lon": row.geometry.x})
+                else:
+                    # centroid for polygons
+                    centroid = row.geometry.centroid
+                    hospitals_list.append({"name": row.get('name', 'Hospital'), "lat": centroid.y, "lon": centroid.x})
+            print(f"Found {len(hospitals_list)} hospitals.")
+            # Save for inspection
+            with open('hospitals.json', 'w') as f:
+                json.dump(hospitals_list, f)
+            return hospitals_list
+        except Exception as e:
+            print("Failed to fetch hospitals from OSM:", e)
+            # Fallback
+            return [{"name": "A.J. Hospital", "lat": 12.8906, "lon": 74.8406}, 
+                    {"name": "Father Muller", "lat": 12.8690, "lon": 74.8475},
+                    {"name": "KMC Hospital", "lat": 12.8722, "lon": 74.8398}]
+
     def _haversine(self, lat1, lon1, lat2, lon2):
         # Distance in km
         R = 6371.0

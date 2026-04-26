@@ -3,131 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zora :: Flood Routing Systems</title>
-    <meta name="description" content="AI-Powered Flood-Aware Ambulance Routing for Mangalore">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <title>FloodRoute AI | Dynamic Fleet Routing</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="static/style.css">
 </head>
 <body>
-    <div class="blob-c">
-        <div class="shape-blob one"></div>
-        <div class="shape-blob two"></div>
-        <div class="shape-blob three"></div>
+    <div id="loader-overlay" class="loader-overlay">
+        <div class="loader-container">
+            <div class="spinner"></div>
+            <p id="loader-text">Initializing Systems...</p>
+            <div class="progress-bar-bg">
+                <div id="loader-progress" class="progress-bar-fill"></div>
+            </div>
+        </div>
     </div>
-    
-    <div class="container glass">
-        <header>
-            <div class="logo">
-                <div class="logo-icon"></div>
-                <h1>FloodRoute AI <span>City of Mangalore</span></h1>
-            </div>
-            
-            <div class="header-stats">
-                <div class="stat-bubble">
-                    <span class="label">Spatio-Temporal Status</span>
-                    <span class="val pulse">Active</span>
-                </div>
-                <div class="stat-bubble">
-                    <span class="label">Last Refresh</span>
-                    <span class="val" id="time-display">Now</span>
-                </div>
-            </div>
-        </header>
 
-        <main>
-            <aside class="sidebar">
-                <div class="sidebar-section">
-                    <h3>Pipeline Metrics</h3>
-                    <ul class="metric-list">
-                        <li>
-                            <div class="icon">🌊</div>
-                            <div class="info">
-                                <span>Global Temp. Risk (LSTM)</span>
-                                <strong>0.0123</strong>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="icon">🌧️</div>
-                            <div class="info">
-                                <span>Live Precip (OWM)</span>
-                                <strong id="live-rain">-- mm</strong>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="icon">📈</div>
-                            <div class="info">
-                                <span>Live Sea Level (Tide)</span>
-                                <strong id="live-sea">-- m</strong>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="icon">🛶</div>
-                            <div class="info">
-                                <span>River Discharge (CWC)</span>
-                                <strong id="live-river">-- m³/s</strong>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="icon">📍</div>
-                            <div class="info">
-                                <span>Live OSMnx Grid (3km² bounding)</span>
-                                <strong>3009 Nodes / 7093 Edges</strong>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                
-                <div class="sidebar-section">
-                    <h3>Fleet Configuration</h3>
+    <div class="app-container">
+        <!-- Live Alert Banner -->
+        <div id="alert-banner" class="alert-banner hidden">
+            <span class="alert-icon">⚠️</span>
+            <span id="alert-text">SEVERE FLOOD RISK PREDICTED IN 3 HOURS</span>
+        </div>
 
-                    <div class="amb-count-control">
-                        <div class="amb-count-header">
-                            <span>Ambulance Fleet</span>
-                            <span class="amb-count-badge" id="amb-count-label">2 Units</span>
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="logo-circle"></div>
+                <h1>FloodRoute <span class="accent">AI</span></h1>
+            </div>
+
+            <div class="sidebar-scroll">
+                <section class="sidebar-section">
+                    <h3>Environment Live Stats</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <span class="stat-label">Rainfall</span>
+                            <span id="stat-rain" class="stat-value">5.0</span>
+                            <span class="stat-unit">mm/h</span>
                         </div>
-                        <div class="slider-wrapper">
-                            <span class="slider-min">1</span>
-                            <input type="range" id="amb-count" min="1" max="6" value="2" class="count-slider" oninput="updateAmbCount(this.value)">
-                            <span class="slider-max">6</span>
+                        <div class="stat-card">
+                            <span class="stat-label">Tide Level</span>
+                            <span id="stat-sea" class="stat-value">1.2</span>
+                            <span class="stat-unit">m</span>
                         </div>
                     </div>
+                    <div class="meta-info">
+                        Last Refresh: <span id="last-refresh">--:--</span>
+                    </div>
+                </section>
 
-                    <div class="feed-toggle" style="margin-top: 1.5rem;">
-                        <label>
-                            <input type="radio" name="feed-mode" value="default" checked onchange="toggleInputs()"> 
-                            Default System Generation
-                        </label>
-                        <br>
-                        <label>
-                            <input type="radio" name="feed-mode" value="custom" onchange="toggleInputs()"> 
-                            Hive Self-Feed (Custom Coordinates)
-                        </label>
+                <section class="sidebar-section">
+                    <h3>Ambulance Fleet Configuration</h3>
+                    <div class="fleet-control">
+                        <div class="control-header">
+                            <label>Active Units</label>
+                            <span id="amb-count-badge" class="count-badge">2</span>
+                        </div>
+                        <input type="range" id="amb-slider" min="1" max="6" value="2" class="count-slider">
                     </div>
 
-                    <div id="custom-inputs" style="display: none; margin-top: 15px;">
-                        <!-- Filled dynamically by JS -->
+                    <div class="feed-mode-toggle">
+                        <button id="mode-auto" class="mode-btn active">System Generated</button>
+                        <button id="mode-manual" class="mode-btn">Custom Feed</button>
                     </div>
-                </div>
-                
-                <button class="run-btn" id="run-pipeline-btn">
-                    <span class="run-icon">▶</span> Run QUBO Optimizer
-                </button>
-            </aside>
+
+                    <div id="custom-coords-container" class="custom-coords hidden">
+                        <!-- Dynamically populated -->
+                    </div>
+                </section>
+
+                <section class="sidebar-section">
+                    <h3>Optimization Logic</h3>
+                    <div class="logic-list">
+                        <div class="logic-item">
+                            <span class="logic-dot"></span>
+                            <span>Yen's K-Shortest Path</span>
+                        </div>
+                        <div class="logic-item">
+                            <span class="logic-dot"></span>
+                            <span>Spatio-Temporal Fusion</span>
+                        </div>
+                        <div class="logic-item">
+                            <span class="logic-dot"></span>
+                            <span>Adaptive GA (QUBO)</span>
+                        </div>
+                    </div>
+                    <button id="run-btn" class="run-btn">
+                        <span class="btn-icon">⚡</span>
+                        Re-Run QUBO Optimizer
+                    </button>
+                </section>
+
+                <section class="sidebar-section">
+                    <h3>Forecasting Timeline</h3>
+                    <canvas id="weather-chart" height="150"></canvas>
+                </section>
+            </div>
+        </aside>
+
+        <main class="main-view">
+            <div id="map"></div>
             
-            <section class="map-view">
-                <div class="iframe-wrapper">
-                    <!-- Serving the generated python map here -->
-                    <iframe src="/map" id="map-frame" frameborder="0"></iframe>
-                    <div class="loader-overlay" id="loader">
-                        <div class="spinner"></div>
-                        <p>Optimizing Neural Paths...</p>
-                    </div>
+            <!-- Route Details Floating Panel -->
+            <div id="route-panel" class="route-panel hidden">
+                <div class="panel-header">
+                    <h4>Optimization Breakdown</h4>
+                    <button id="close-panel">×</button>
                 </div>
-            </section>
+                <div id="route-cards-container" class="route-cards">
+                    <!-- Cards populated by JS -->
+                </div>
+            </div>
         </main>
     </div>
-    <script src="script.js"></script>
+
+    <!-- Tooltip mapping -->
+    <script src="static/script.js"></script>
 </body>
 </html>
