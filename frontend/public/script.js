@@ -24,7 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
         closePanel: document.getElementById('close-panel'),
         routeCards: document.getElementById('route-cards-container'),
         statRain: document.getElementById('stat-rain'),
-        statSea: document.getElementById('stat-sea')
+        statSea: document.getElementById('stat-sea'),
+        // Benchmarks
+        benchDijkstra: document.getElementById('bench-dijkstra'),
+        benchAstar: document.getElementById('bench-astar'),
+        benchSv2: document.getElementById('bench-sv2'),
+        benchGa: document.getElementById('bench-ga')
     };
 
     // ── Initialization ──
@@ -41,11 +46,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await resp.json();
             if (data.status !== 'running') {
                 elements.loader.classList.add('hidden');
+                fetchResults();
             } else {
                 updatePipelineStatus(data);
             }
         } catch (e) {
             elements.loader.classList.add('hidden');
+            fetchResults();
         }
     }
 
@@ -178,9 +185,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await resp.json();
             renderResultsOnMap(data);
             updateRoutePanel(data);
+            updateBenchmarks(data.benchmarks);
         } catch (e) {
             console.error('Failed to fetch results.json', e);
         }
+    }
+
+    function updateBenchmarks(bench) {
+        if (!bench) return;
+        if (elements.benchDijkstra) elements.benchDijkstra.textContent = bench.dijkstra_ms !== undefined ? `${bench.dijkstra_ms} ms` : '--';
+        if (elements.benchAstar) elements.benchAstar.textContent = bench.astar_ms !== undefined ? `${bench.astar_ms} ms` : '--';
+        if (elements.benchSv2) elements.benchSv2.textContent = bench.tsinghua_v2_ms !== undefined ? `${bench.tsinghua_v2_ms} ms` : '--';
+        if (elements.benchGa) elements.benchGa.textContent = bench.ga_optimization_ms !== undefined ? `${bench.ga_optimization_ms} ms` : '--';
     }
 
     // ── Map Rendering ──

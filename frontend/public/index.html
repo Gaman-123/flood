@@ -83,7 +83,7 @@
                     <div class="logic-list">
                         <div class="logic-item">
                             <span class="logic-dot"></span>
-                            <span>Tsinghua SV2 Algorithm</span>
+                            <span>Tsinghua v2 SSSP Algorithm</span>
                         </div>
                         <div class="logic-item">
                             <span class="logic-dot"></span>
@@ -106,7 +106,31 @@
 
                 <section class="sidebar-section">
                     <h3>Forecasting Timeline</h3>
-                    <canvas id="weather-chart" height="150"></canvas>
+                    <div class="chart-container">
+                        <canvas id="weather-chart"></canvas>
+                    </div>
+                </section>
+
+                <section class="sidebar-section">
+                    <h3>Research Performance (ms)</h3>
+                    <div id="metrics-panel" class="metrics-grid">
+                        <div class="metric-card">
+                            <span class="metric-label">Dijkstra</span>
+                            <span id="bench-dijkstra" class="metric-value">--</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-label">A*</span>
+                            <span id="bench-astar" class="metric-value">--</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-label">Tsinghua v2 SSSP</span>
+                            <span id="bench-sv2" class="metric-value">--</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-label">Genetic Algo</span>
+                            <span id="bench-ga" class="metric-value">--</span>
+                        </div>
+                    </div>
                 </section>
             </div>
         </aside>

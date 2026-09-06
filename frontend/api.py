@@ -76,7 +76,7 @@ async def run_pipeline_task(payload: dict):
     try:
         # Build command based on payload config
         cmd = ["python", "main.py"]
-        if getattr(payload, "amb_count", None):
+        if payload.get("amb_count"):
              cmd.extend(["--amb_count", str(payload.get("amb_count", 2))])
              
         for i, coords in enumerate(payload.get("ambulances", [])):

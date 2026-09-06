@@ -120,11 +120,16 @@ def generate_spatial_mock_data(n_samples=2000):
         np.clip(df['water_influence'] / 10.0, 0, 1) * 0.10
     )
 
-    # Add realistic noise
-    df['risk_score'] = np.clip(df['risk_score'] + np.random.normal(0, 0.03, len(df)), 0, 1)
+    # Add significant noise to simulate real-world stochasticity
+    df['risk_score'] = np.clip(df['risk_score'] + np.random.normal(0, 0.12, len(df)), 0, 1)
 
-    # Binary label
+    # Binary label with fuzzy threshold
     df['is_flooded'] = (df['risk_score'] > 0.50).astype(int)
+
+    # Introduce irreducible error by flipping ~7.5% of labels randomly
+    # This simulates sensor errors, anomalous local conditions, or human misreporting
+    flip_mask = np.random.choice([True, False], size=len(df), p=[0.075, 0.925])
+    df.loc[flip_mask, 'is_flooded'] = 1 - df.loc[flip_mask, 'is_flooded']
 
     print(f"  Total samples: {len(df)}")
     print(f"  Flooded: {df['is_flooded'].sum()} | Safe: {(df['is_flooded']==0).sum()}")

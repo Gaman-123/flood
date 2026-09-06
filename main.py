@@ -10,13 +10,14 @@ import osmnx as ox
 import networkx as nx
 from datetime import datetime
 
-def export_results_json(flood_df, graph, final_routes, hospitals):
+def export_results_json(flood_df, graph, final_routes, hospitals, benchmarks=None):
     print("Exporting results to JSON for frontend...")
     
     # 1. Routes and Stats
     results = {
         "status": "success",
         "timestamp": datetime.now().isoformat(),
+        "benchmarks": benchmarks or {},
         "ambulances": [],
         "hospitals": hospitals,
         "flood_zones": []
@@ -212,9 +213,15 @@ def run_pipeline():
         else:
             print(f"  {a}: No feasible path.")
 
+    # Run Research Benchmarks for the first ambulance pair
+    first_amb = list(ambulances.keys())[0]
+    src, tgt = ambulances[first_amb]
+    benchmarks = gen.run_benchmark(src, tgt)
+    benchmarks["ga_optimization_ms"] = qubo.ga_bench_ms
+    
     # 4. Map and Data Export
     create_map(flood_map, G, best_routes)
-    export_results_json(flood_map, G, best_routes, dp.hospitals)
+    export_results_json(flood_map, G, best_routes, dp.hospitals, benchmarks=benchmarks)
     print("\n=== PIPELINE SUCCESSFUL ===")
 
 if __name__ == "__main__":

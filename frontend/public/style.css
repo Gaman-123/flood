@@ -206,6 +206,45 @@ body {
     text-align: right;
 }
 
+/* Forecasting */
+.chart-container {
+    height: 150px;
+    background: rgba(255,255,255,0.02);
+    border-radius: 12px;
+    padding: 10px;
+    border: 1px solid var(--glass-border);
+}
+
+/* Research Performance */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.metric-card {
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--glass-border);
+    padding: 10px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.metric-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+}
+
+.metric-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent-1);
+    font-family: 'JetBrains Mono', monospace;
+}
+
 /* Inputs */
 .fleet-control {
     background: rgba(255,255,255,0.03);
