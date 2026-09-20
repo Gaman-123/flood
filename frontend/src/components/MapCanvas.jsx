@@ -15,32 +15,33 @@ if (MAPBOX_TOKEN) {
   mapboxgl.accessToken = MAPBOX_TOKEN;
 }
 
-const OSM_STYLE = {
+const PUBLIC_TILES_STYLE = {
   version: 8,
   sources: {
-    "osm-raster-tiles": {
+    "carto-voyager": {
       type: "raster",
       tiles: [
-        "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        "https://b.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        "https://c.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        "https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png",
+        "https://b.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png",
+        "https://c.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png",
+        "https://d.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png"
       ],
       tileSize: 256,
-      attribution: "© OpenStreetMap contributors"
+      attribution: "© OpenStreetMap contributors, © CARTO"
     }
   },
   layers: [
     {
-      id: "osm-raster-layer",
+      id: "carto-voyager-layer",
       type: "raster",
-      source: "osm-raster-tiles",
+      source: "carto-voyager",
       minzoom: 0,
-      maxzoom: 19
+      maxzoom: 20
     }
   ]
 };
 
-const STYLE = MAPBOX_TOKEN ? "mapbox://styles/mapbox/light-v11" : OSM_STYLE;
+const STYLE = MAPBOX_TOKEN ? "mapbox://styles/mapbox/light-v11" : PUBLIC_TILES_STYLE;
 
 const EMPTY = { type: "FeatureCollection", features: [] };
 const ROAD_COLOR = ["interpolate", ["linear"], ["get", "s"],
