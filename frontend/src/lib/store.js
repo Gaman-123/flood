@@ -79,12 +79,10 @@ export const useAppStore = create((set, get) => ({
         activeIncidents: incidents.map((i) => i.id),
         dataLoaded: true,
       });
-      const API = process.env.REACT_APP_BACKEND_URL;
-      if (API) {
-        fetch(`${API}/api/metrics`).then((r) => r.ok ? r.json() : null)
-          .then((metrics) => metrics && set({ metrics }))
-          .catch(() => {});
-      }
+      const API = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
+      fetch(`${API}/api/metrics`).then((r) => r.ok ? r.json() : null)
+        .then((metrics) => metrics && set({ metrics }))
+        .catch(() => {});
     } catch (e) { console.warn("dispatch data load failed", e); }
   },
 
@@ -126,7 +124,7 @@ export const useAppStore = create((set, get) => ({
   toggleSearch: () => set((s) => ({ showSearch: !s.showSearch })),
   clearEmergency: () => set({ emergency: null, emergencyResult: null, emergencyError: null }),
   async runEmergency(lat, lon) {
-    const API = process.env.REACT_APP_BACKEND_URL;
+    const API = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
     set({ emergency: { lat, lon }, emergencyResult: null, emergencyError: null, emergencyLoading: true });
     try {
       const scenario = get().scenarioId;

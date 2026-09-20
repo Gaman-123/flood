@@ -4,7 +4,7 @@ import TriggerGauge from "../TriggerGauge";
 import { stateColor, stateLabel } from "../../lib/colors";
 import { CloudRain, Waves, RefreshCw } from "lucide-react";
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+const API = (process.env.REACT_APP_BACKEND_URL || "http://localhost:8000") + "/api";
 
 export default function LiveTab() {
   const [data, setData] = useState(null);

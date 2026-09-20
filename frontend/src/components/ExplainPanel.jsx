@@ -6,7 +6,7 @@ import { X, Loader2, Info, Satellite, Hospital, Layers } from "lucide-react";
 // decomposes the trained model's prediction with SHAP. Nothing here is generated
 // prose: the summary is assembled from the attributions.
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+const API = (process.env.REACT_APP_BACKEND_URL || "http://localhost:8000") + "/api";
 
 const BAND_COLOR = {
   Low: "var(--safe)", Moderate: "#7fb23f", Elevated: "var(--watch)",
