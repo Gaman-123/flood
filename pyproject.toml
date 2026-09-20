@@ -1,0 +1,80 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "floodrisk"
+version = "1.0.0"
+description = "Spatiotemporal flood risk assessment and emergency response for Dakshina Kannada (Sentinel-1 SAR + ML susceptibility + flood-aware routing + QAOA dispatch)"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+
+# Pinned to the exact versions the published results were produced with, so a
+# fresh clone reproduces every figure and metric in the paper.
+dependencies = [
+    "earthengine-api==1.7.35",
+    "geemap==0.38.3",
+    "geopandas==1.1.4",
+    "joblib==1.5.3",
+    "matplotlib==3.11.1",
+    "networkx==3.6.1",
+    "numpy==2.4.6",
+    "osmnx==2.1.0",
+    "pandas==3.0.3",
+    "pillow==12.3.0",
+    "pyarrow==25.0.0",
+    "rasterio==1.5.0",
+    "scikit-learn==1.9.0",
+    "scipy==1.18.0",
+    "shap==0.52.0",
+    "shapely==2.1.2",
+    "xgboost==3.3.0",
+]
+
+[project.optional-dependencies]
+# Backend API that serves the dashboard (imports floodrisk.live for real weather).
+api = [
+    "fastapi==0.110.1",
+    "uvicorn==0.25.0",
+    "python-dotenv>=1.0.1",
+    "pydantic>=2.6.4",
+]
+dev = [
+    "pytest>=8.0.0",
+    "ruff>=0.6.0",
+]
+# Experiment tracking is OPTIONAL and deliberately not part of the core install:
+# mlflow's own dependency bounds will happily downgrade pandas/pyarrow, which
+# would silently break the pinned research environment. Install it separately
+# (ideally in its own venv) if you want run history:
+#   pip install mlflow --no-deps  # or: uv tool install mlflow
+tracking = [
+    "mlflow>=2.16",
+]
+
+[tool.setuptools]
+packages = ["floodrisk"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# Tests hitting Earth Engine / live weather APIs are opt-in:
+#   pytest -m "not network"   (default in CI)
+markers = [
+    "network: requires Earth Engine credentials or live internet APIs",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+# E702 (semicolons) is a deliberate compactness choice in the pipeline scripts.
+ignore = ["E702"]
+
+[tool.ruff.lint.per-file-ignores]
+# Pipeline scripts use `import ee` at module scope and then rebind it inside
+# main() via `ee = ee_init.init()` (which returns the initialized ee module).
+# That is intentional, so the resulting shadowing/unused-import warnings are muted
+# here rather than destabilising working research code.
+"scripts/*.py" = ["F401", "F811", "F841"]

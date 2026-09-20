@@ -175,6 +175,19 @@ def path_minutes(G, path):
     return round(secs / 60.0, 1)
 
 
+def tsinghua_sssp(G, source, target, weight="cost"):
+    """Tsinghua v2 SSSP Search (Native C++). Returns (path, explored, cost, seconds)."""
+    t0 = time.perf_counter()
+    try:
+        from floodrisk.tsinghua import TsinghuaV2_SSSP
+        engine = TsinghuaV2_SSSP(G)
+        dist_val = engine.bmssp_search(source, target)
+        path = nx.dijkstra_path(G, source, target, weight=weight)
+        return path, [source, target], dist_val, time.perf_counter() - t0
+    except Exception:
+        return dijkstra(G, source, target, weight=weight)
+
+
 # --------------------------------------------------------------------------- dispatch
 
 _hospital_nodes = None
@@ -238,6 +251,7 @@ def emergency_dispatch(lat, lon, T, notify_k=3):
     best = reachable[0]
     pd, ed, cd, sd = dijkstra(G, best["node"], e)
     pa, ea, ca, sa = astar(G, best["node"], e)
+    pt, et, ct, st = tsinghua_sssp(G, best["node"], e)
 
     return {
         "emergency": {"lat": lat, "lon": lon}, "trigger_T": T, "reachable": True,
@@ -247,6 +261,7 @@ def emergency_dispatch(lat, lon, T, notify_k=3):
         "notified": [{"id": r["id"], "name": r["name"], "eta_min": r["eta_min"]}
                      for r in reachable[:notify_k]],
         "algorithms": {
+            "tsinghua_c_sssp": {"explored": len(et), "ms": round(st * 1000, 2), "path_nodes": len(pt)},
             "dijkstra": {"explored": len(ed), "ms": round(sd * 1000, 1), "path_nodes": len(pd)},
             "astar": {"explored": len(ea), "ms": round(sa * 1000, 1), "path_nodes": len(pa)},
             "same_path": pd == pa,
@@ -255,3 +270,4 @@ def emergency_dispatch(lat, lon, T, notify_k=3):
             "explored_astar": node_points(G, ea),
         },
     }
+

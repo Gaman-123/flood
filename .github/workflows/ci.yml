@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  research:
+    name: Research invariants
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install research package
+        run: pip install -e ".[dev]"
+
+      # Network/Earth-Engine tests are excluded: CI has no GEE credentials and
+      # must not depend on third-party weather APIs being up.
+      - name: Invariant tests
+        run: pytest -m "not network" -q
+
+      - name: Lint
+        run: ruff check floodrisk scripts tests
+
+  secrets:
+    name: Secret hygiene
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fail if credentials are tracked
+        run: |
+          set -e
+          if git ls-files | grep -Ei 'secrets/|service-account.*\.json|\.env$|\.pem$|\.key$'; then
+            echo "::error::credential-like file is tracked by git"
+            exit 1
+          fi
+          echo "no tracked credentials"
+
+      - name: Fail if .secrets is not ignored
+        run: |
+          set -e
+          mkdir -p .secrets && echo '{}' > .secrets/ee-service-account.json
+          if ! git check-ignore -q .secrets/ee-service-account.json; then
+            echo "::error::.secrets/ is not gitignored"
+            exit 1
+          fi
+          echo ".secrets/ correctly ignored"
+
+  frontend:
+    name: Dashboard build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install
+        working-directory: flood-risk-app/frontend
+        run: npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+
+      - name: Build
+        working-directory: flood-risk-app/frontend
+        env:
+          CI: false # treat warnings as warnings, not errors
+          REACT_APP_MAPBOX_TOKEN: ${{ secrets.MAPBOX_TOKEN }}
+          REACT_APP_BACKEND_URL: http://localhost:8000
+        run: npm run build

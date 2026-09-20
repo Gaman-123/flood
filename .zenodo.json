@@ -1,0 +1,28 @@
+{
+  "title": "A Two-Stage Spatiotemporal Flood-Risk Framework with Flood-Aware Emergency Routing and Hybrid Quantum Dispatch for a Single-Orbit Coastal District",
+  "description": "<p>Reproducible research pipeline accompanying the manuscript of the same name. Covers a multi-temporal Sentinel-1 SAR flood-frequency inventory built under a single-orbit (~12-day revisit) constraint over Dakshina Kannada, Karnataka, India; a calibrated, SHAP-explainable static susceptibility model with an explicit NDVI/land-cover confound ablation; a rainfall-driven temporal trigger validated against two documented flood events plus an adversarial heavy-rain non-flood day; flood-aware emergency routing over an OpenStreetMap graph with hand-implemented, search-transparent Dijkstra and A*; and a 9-qubit QUBO/QAOA ambulance dispatch layer verified exactly against the Hungarian algorithm.</p><p>A dependency-aware build system regenerates every figure, table and reported value in the manuscript from public source data. An automated test suite encodes the methodological invariants as executable assertions.</p>",
+  "upload_type": "software",
+  "license": "mit",
+  "access_right": "open",
+  "keywords": [
+    "flood susceptibility",
+    "synthetic aperture radar",
+    "Sentinel-1",
+    "spatiotemporal risk",
+    "flood-aware routing",
+    "emergency dispatch",
+    "QAOA",
+    "QUBO",
+    "explainable AI",
+    "reproducible research",
+    "Google Earth Engine",
+    "Dakshina Kannada"
+  ],
+  "creators": [
+    {
+      "name": "REPLACE WITH AUTHOR LIST BEFORE DEPOSIT",
+      "affiliation": ""
+    }
+  ],
+  "notes": "Input datasets are public (Copernicus Sentinel-1/2, USGS SRTM, MERIT Hydro, CHIRPS, JRC Global Surface Water, ESA WorldCover, OpenStreetMap, Open-Meteo/ERA5, Natural Earth). WorldTides requires a free API key and is not used in the reported trigger. No credentials are included in this archive."
+}

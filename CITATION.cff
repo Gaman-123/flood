@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+message: "If you use this software or its outputs, please cite it as below."
+title: >-
+  A Two-Stage Spatiotemporal Flood-Risk Framework with Flood-Aware Emergency
+  Routing and Hybrid Quantum Dispatch for a Single-Orbit Coastal District
+abstract: >-
+  Reproducible research pipeline for flood-risk assessment and emergency response
+  planning over Dakshina Kannada, Karnataka, India. Builds a multi-temporal
+  Sentinel-1 SAR flood-frequency inventory under a single-orbit revisit
+  constraint, trains a calibrated and SHAP-explainable static susceptibility
+  model, modulates it with a rainfall-driven temporal trigger, routes emergency
+  vehicles over a flood-aware OpenStreetMap graph with search-transparent
+  Dijkstra and A*, and solves ambulance-to-incident dispatch as a QUBO with QAOA
+  verified against the Hungarian optimum. Every reported figure and table is
+  regenerated from source data by the included build system.
+type: software
+license: MIT
+version: 1.0.0
+# TODO: set the release date at deposit time.
+date-released: "2026-07-26"
+keywords:
+  - flood susceptibility
+  - synthetic aperture radar
+  - Sentinel-1
+  - spatiotemporal risk
+  - emergency routing
+  - QAOA
+  - reproducible research
+  - Dakshina Kannada
+# ---------------------------------------------------------------------------
+# Author block intentionally left as a placeholder: the manuscript is currently
+# anonymised for review. Fill this in before the deposit is made public, and
+# keep the order consistent with the camera-ready author list.
+# ---------------------------------------------------------------------------
+authors:
+  - name: "REPLACE WITH AUTHOR LIST BEFORE DEPOSIT"

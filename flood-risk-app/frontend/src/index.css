@@ -1,0 +1,197 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* ===========================================================================
+   ORION — neomorphic light theme
+   Soft-UI: surfaces are extruded from (or pressed into) a single light plane
+   using paired light/dark shadows. No hard borders; depth carries hierarchy.
+   =========================================================================== */
+
+:root {
+    /* surface plane */
+    --surface: #e8ebf1;
+    --surface-raised: #edf0f5;
+    --surface-sunken: #e2e6ed;
+
+    /* neomorphic shadow pair */
+    --shadow-dark: #c3cad6;
+    --shadow-light: #ffffff;
+
+    --neo-out: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+    --neo-out-sm: 3px 3px 7px var(--shadow-dark), -3px -3px 7px var(--shadow-light);
+    --neo-out-lg: 10px 10px 22px var(--shadow-dark), -10px -10px 22px var(--shadow-light);
+    --neo-in: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+    --neo-in-sm: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light);
+
+    /* ink */
+    --text: #2c3648;
+    --text-dim: #6a7789;
+    --text-mute: #97a2b3;
+
+    /* semantic — deepened so they hold contrast on a light plane */
+    --accent: #3f74c9;
+    --safe: #2aa96b;
+    --watch: #cf8f1c;
+    --danger: #d94459;
+
+    --radius-panel: 20px;
+    --radius-card: 16px;
+    --radius-btn: 12px;
+}
+
+body {
+    margin: 0;
+    font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: var(--surface);
+    color: var(--text);
+}
+
+.mono {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-feature-settings: "tnum";
+}
+
+@layer base {
+    :root {
+        --background: 220 25% 93%;
+        --foreground: 220 24% 23%;
+        --card: 220 27% 95%;
+        --card-foreground: 220 24% 23%;
+        --popover: 220 27% 95%;
+        --popover-foreground: 220 24% 23%;
+        --primary: 217 53% 52%;
+        --primary-foreground: 0 0% 100%;
+        --secondary: 220 22% 89%;
+        --secondary-foreground: 220 24% 23%;
+        --muted: 220 22% 89%;
+        --muted-foreground: 218 12% 47%;
+        --accent: 217 53% 52%;
+        --accent-foreground: 0 0% 100%;
+        --destructive: 351 66% 56%;
+        --destructive-foreground: 0 0% 100%;
+        --border: 220 20% 84%;
+        --input: 220 20% 84%;
+        --ring: 217 53% 52%;
+        --chart-1: 217 53% 52%;
+        --chart-2: 42 76% 46%;
+        --chart-3: 15 70% 55%;
+        --chart-4: 155 60% 42%;
+        --chart-5: 30 75% 55%;
+        --radius: 0.75rem;
+    }
+    * { @apply border-border; }
+    html, body, #root { height: 100%; }
+    body { @apply bg-background text-foreground; }
+}
+
+/* ------------------------------------------------------------------ surfaces */
+
+.card-panel {
+    background: var(--surface-raised);
+    border: none;
+    border-radius: var(--radius-card);
+    box-shadow: var(--neo-out);
+}
+
+.panel-sunken {
+    background: var(--surface-sunken);
+    border-radius: var(--radius-card);
+    box-shadow: var(--neo-in);
+}
+
+/* ------------------------------------------------------------------ controls */
+
+.chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 13px; border-radius: 999px; font-size: 11px;
+    font-weight: 500;
+    background: var(--surface);
+    border: none;
+    color: var(--text-dim);
+    box-shadow: var(--neo-out-sm);
+    transition: box-shadow .18s cubic-bezier(.22,1,.36,1),
+                transform .18s cubic-bezier(.22,1,.36,1),
+                color .18s;
+}
+.chip:hover { color: var(--text); transform: translateY(-1px); }
+.chip:active,
+.chip[data-pressed="true"] { box-shadow: var(--neo-in-sm); transform: translateY(0); color: var(--accent); }
+
+.rail-btn {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 4px; padding: 12px 6px; border-radius: var(--radius-btn);
+    color: var(--text-mute);
+    transition: color .18s, box-shadow .18s cubic-bezier(.22,1,.36,1),
+                transform .18s cubic-bezier(.22,1,.36,1);
+    cursor: pointer;
+    font-size: 10px; letter-spacing: 0.03em; font-weight: 500;
+    width: 100%;
+    border: none;
+    background: transparent;
+}
+.rail-btn:hover { color: var(--text); box-shadow: var(--neo-out-sm); }
+.rail-btn.active {
+    color: var(--accent);
+    background: var(--surface-sunken);
+    box-shadow: var(--neo-in-sm);
+}
+.rail-btn:active { transform: scale(0.96); }
+
+.stat-num, .hero-stat {
+    font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+}
+
+/* ------------------------------------------------------------------ map chrome */
+
+.map-canvas { cursor: crosshair; }
+
+.mapboxgl-ctrl-attrib, .maplibregl-ctrl-attrib {
+    background: rgba(237, 240, 245, 0.82) !important;
+    color: var(--text-mute) !important;
+    font-size: 10px !important;
+}
+.mapboxgl-ctrl-attrib a, .maplibregl-ctrl-attrib a { color: var(--text-dim) !important; }
+.mapboxgl-canvas, .maplibregl-canvas { outline: none !important; }
+.mapboxgl-ctrl-group, .maplibregl-ctrl-group {
+    background: var(--surface-raised) !important;
+    border: none !important;
+    border-radius: var(--radius-btn) !important;
+    box-shadow: var(--neo-out-sm) !important;
+    overflow: hidden;
+}
+.mapboxgl-ctrl-group button, .maplibregl-ctrl-group button { background: transparent !important; }
+
+/* ------------------------------------------------------------------ motion */
+
+@keyframes pulseDanger { 0%, 100% { opacity: 0.9; } 50% { opacity: 0.35; } }
+.pulse-danger { animation: pulseDanger 1.2s ease-in-out infinite; }
+
+@keyframes routeCutFlash { 0% { opacity: 1; } 50% { opacity: 0.35; } 100% { opacity: 1; } }
+.route-cut-flash { animation: routeCutFlash 0.5s ease-in-out 4; }
+
+/* ------------------------------------------------------------------ scrollbars */
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--surface-sunken); border-radius: 5px; }
+::-webkit-scrollbar-thumb {
+    background: var(--surface);
+    border-radius: 5px;
+    box-shadow: var(--neo-out-sm);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--surface-raised); }
+
+.legend-ramp {
+    background: linear-gradient(90deg,
+        rgb(30,100,180) 0%,
+        rgb(70,170,200) 25%,
+        rgb(240,220,90) 50%,
+        rgb(240,140,50) 75%,
+        rgb(220,40,40) 100%);
+}

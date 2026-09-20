@@ -1,0 +1,9 @@
+# Backend API deps only. The research package (`floodrisk`) provides the live
+# weather/tide pipeline and is installed from the repo root:  pip install -e .
+fastapi==0.110.1
+uvicorn==0.25.0
+python-dotenv>=1.0.1
+pydantic>=2.6.4
+
+# dev
+pytest>=8.0.0

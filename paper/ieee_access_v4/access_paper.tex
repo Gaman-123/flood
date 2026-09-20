@@ -1,0 +1,2033 @@
+%%=============================================================================
+%%  IEEE ACCESS submission format.
+%%  Revision: Version 4, based on the latest Version 3 manuscript.
+%%
+%%  Build:  tectonic access_paper.tex        (tectonic runs XeTeX -> fontspec)
+%%
+%%  Layout reproduces Access-Template-2024.docx exactly. Every dimension here was
+%%  read out of that .docx (word/document.xml, word/styles.xml); see
+%%  scripts/make_ieee_access.py for the extracted values in twips.
+%%=============================================================================
+\documentclass[10pt,twocolumn]{article}
+
+%% ---- page geometry: 8.000 x 10.875 in, the Access trim size -----------------
+\usepackage[
+  paperwidth=8.0in, paperheight=10.875in,
+  top=0.903in, bottom=0.722in, left=0.514in, right=0.514in,
+  headsep=12pt, footskip=0.444in,
+  columnsep=0.278in
+]{geometry}
+
+%% ---- genuine template fonts via XeTeX --------------------------------------
+\usepackage{amsmath}
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+\newfontfamily\helv{Helvetica}[Scale=MatchLowercase]
+%% Times-compatible math to sit with Times New Roman text. TeX Gyre Termes Math
+%% is the free Times math companion; if it is unavailable the fallback below
+%% keeps the default math font rather than failing the build.
+\usepackage{unicode-math}
+%% STIX Two Math is the Times-metric math companion shipped with macOS; Latin
+%% Modern Math lacks glyphs used here (e.g. U+2216 set minus) and drops them.
+\IfFontExistsTF{TeX Gyre Termes Math}
+  {\setmathfont{TeX Gyre Termes Math}}
+  {\IfFontExistsTF{STIX Two Math}
+    {\setmathfont{STIX Two Math}}
+    {\IfFontExistsTF{Latin Modern Math}{\setmathfont{Latin Modern Math}}{}}}
+
+%% amssymb must NOT be loaded alongside unicode-math: both define \eth and the
+%% duplicate definition aborts the build. unicode-math supplies those symbols.
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage[table]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,fit,backgrounds}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{siunitx}
+\sisetup{detect-all,group-separator={,}}
+%% \MakeUppercase breaks on headings containing math (e.g. "A$^\ast$").
+%% textcase's \MakeTextUppercase leaves math mode untouched.
+\usepackage{textcase}
+\usepackage{titlesec}
+\usepackage{balance}
+\usepackage[hidelinks]{hyperref}
+
+%% ---- Access palette ---------------------------------------------------------
+\definecolor{accessblue}{HTML}{00629B}
+\definecolor{accessgrey}{HTML}{58595B}
+
+%% ---- body text: 10 pt on exactly 12 pt, justified ---------------------------
+\renewcommand{\normalsize}{\fontsize{10}{12}\selectfont}
+\normalsize
+\setlength{\parindent}{10pt}      %% PARAIndent firstLine=200tw = 10pt
+\setlength{\parskip}{0pt}
+\frenchspacing
+
+%% ---- headings ---------------------------------------------------------------
+%% H1  Helvetica 9pt bold, #00629B, caps, roman numeral
+%% "Tables should be numbered with Roman Numerals." Figures stay Arabic.
+\renewcommand{\thetable}{\Roman{table}}
+\renewcommand{\thesection}{\Roman{section}}
+%% IEEE writes a cross-reference as "Section V-H" while the heading itself
+%% shows only "H.". \thesubsection feeds BOTH \ref and the heading, so it carries
+%% the compound form and titlesec below prints just the letter. Without this,
+%% every subsection reference renders as a bare "Section H", which is ambiguous
+%% because the letters restart in each section.
+\renewcommand{\thesubsection}{\thesection-\Alph{subsection}}
+\renewcommand{\thesubsubsection}{\arabic{subsubsection})}
+\titleformat{\section}{\helv\fontsize{9}{11}\bfseries\color{accessblue}\MakeTextUppercase}
+            {\thesection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{12pt}{4pt}
+%% H2  Helvetica 9pt bold italic, #58595B
+\titleformat{\subsection}{\helv\fontsize{9}{11}\bfseries\itshape\color{accessgrey}\MakeTextUppercase}
+            {\Alph{subsection}.}{0.5em}{}
+\titlespacing*{\subsection}{0pt}{13pt}{3pt}
+%% H3  Helvetica 9pt, #58595B
+\titleformat{\subsubsection}{\helv\fontsize{9}{11}\color{accessgrey}}
+            {\thesubsubsection}{0.5em}{}
+\titlespacing*{\subsubsection}{0pt}{4pt}{2pt}
+\titleformat{\paragraph}[runin]{\itshape}{}{0pt}{}[:]
+
+%% ---- captions: Helvetica 7pt bold, "FIGURE n." / "TABLE n." -----------------
+\captionsetup{font={rm,footnotesize},labelfont=bf,justification=raggedright,
+              singlelinecheck=false,skip=4pt}
+\captionsetup[figure]{name=FIGURE,labelsep=period,
+  font={stretch=1.0},labelfont={bf},
+  textfont={},format=plain}
+\renewcommand{\figurename}{FIGURE}
+\renewcommand{\tablename}{TABLE}
+\DeclareCaptionFont{acccap}{\helv\fontsize{7}{8.5}\selectfont}
+\captionsetup[figure]{font=acccap,labelfont={acccap,bf}}
+\captionsetup[table]{font=acccap,labelfont={acccap,bf},position=top}
+
+%% ---- floats -----------------------------------------------------------------
+\setlength{\floatsep}{8pt plus 2pt minus 2pt}
+\setlength{\textfloatsep}{10pt plus 2pt minus 2pt}
+\setlength{\dblfloatsep}{8pt plus 2pt minus 2pt}
+\setlength{\dbltextfloatsep}{10pt plus 2pt minus 2pt}
+\renewcommand{\arraystretch}{1.05}
+
+%% ---- references: 8 pt --------------------------------------------------------
+\renewcommand{\bibfont}{\fontsize{8}{9.5}\selectfont}
+
+\newcommand{\Sx}{S(\mathbf{x})}
+\newcommand{\Tt}{T(t)}
+\newcommand{\Rxt}{R(\mathbf{x},t)}
+
+%% ---- header and footer, as the template actually sets them ------------------
+%% The template carries the IEEE Access logo at the top right with a rule under
+%% it, and NO author running head: that is added by IEEE at production. The
+%% footer is Helvetica 6 pt, "VOLUME XX, 2017" left and the page number right.
+%% Logo assets are the ones shipped inside the template (word/media), printed at
+%% their template size: 383 px at 299 ppi = 1.281 in on page one, 322 px on the
+%% rest.
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancyhead[R]{\includegraphics[width=1.077in]{figures/ieee_access_logo.jpeg}}
+\fancyfoot[L]{\helv\fontsize{6}{8}\selectfont VOLUME XX, 2017}
+\fancyfoot[R]{\helv\fontsize{6}{8}\selectfont\thepage}
+\setlength{\headheight}{22pt}
+
+\fancypagestyle{accessfirst}{%
+  \fancyhf{}%
+  \renewcommand{\headrulewidth}{0.5pt}%
+  \fancyhead[R]{\includegraphics[width=1.281in]{figures/ieee_access_logo_p1.jpeg}}%
+  \fancyfoot[L]{\helv\fontsize{6}{8}\selectfont VOLUME XX, 2017}%
+  \fancyfoot[R]{\helv\fontsize{6}{8}\selectfont\thepage}%
+}
+
+\begin{document}
+
+\thispagestyle{accessfirst}
+\twocolumn[
+\begin{@twocolumnfalse}
+\vspace*{-2pt}
+
+% The template prints a publication-date line above the DOI; IEEE fills both.
+{\fontsize{7.5}{9}\selectfont
+Date of publication xxxx 00, 0000, date of current version xxxx 00, 0000.\par}
+{\fontsize{6}{8}\selectfont\itshape
+Digital Object Identifier 10.1109/ACCESS.2024.DOI\par}
+
+\vspace{18pt}
+
+{\helv\fontsize{22}{25}\bfseries\color{accessblue}\raggedright
+Spatiotemporal Flood Risk Modeling Under a Single-Orbit Synthetic Aperture Radar Constraint: Confound-Controlled Susceptibility and Flood-Aware Emergency Routing\par}
+
+\vspace{12pt}
+
+% AU: Helvetica 10pt bold, indented 1380tw (0.958in) from the right
+\begin{minipage}{\dimexpr\textwidth-0.958in\relax}
+{\helv\fontsize{10}{12}\selectfont\raggedright
+\textbf{MUSTAFA BASTHIKODI}\textsuperscript{1}, ([MEMBERSHIP GRADE], IEEE),
+\textbf{KRISH P. CHOWTA}\textsuperscript{1},
+\textbf{ADVAITH SHAJEENDRAN}\textsuperscript{1},
+\textbf{DHRITHI K. S.}\textsuperscript{1},
+and \textbf{GAMAN A. RAI}\textsuperscript{1}\par}
+
+\vspace{5pt}
+
+% PI: 7.5pt on 9pt fixed
+{\fontsize{7.5}{9}\selectfont\raggedright
+\textsuperscript{1}Department of Computer Science and Engineering, Sahyadri College of Engineering and Management, Adyar, Mangaluru 575007, Karnataka, India
+
+Corresponding author: Mustafa Basthikodi (e-mail: [INSTITUTIONAL EMAIL]).\par}
+\end{minipage}
+
+\vspace{10pt}
+
+{\fontsize{7}{9}\selectfont
+This work was supported by [FUNDING SOURCE / grant number, or delete this sentence if the work received no external funding].\par}
+
+\vspace{12pt}
+
+% Abstract: 10pt justified, right indent 1380tw, run-in label in Access blue
+\begin{minipage}{\dimexpr\textwidth-0.958in\relax}
+{\fontsize{10}{12}\selectfont
+{\helv\bfseries\color{accessblue}ABSTRACT }Coastal districts of southwestern India flood every monsoon, yet the satellite record available for mapping those floods is thinner than the modeling literature usually assumes. Over Dakshina Kannada, Karnataka, a single Sentinel-1 orbit samples the district on a nominal twelve-day cycle, so individual flash-flood peaks may occur entirely inside the revisit gap. We therefore decompose risk into a static susceptibility surface, trained on a multi-temporal radar flood-frequency inventory, and a dynamic rainfall trigger. A remote-sensing confound is identified and removed: a model given land cover and a vegetation index reaches an area under the curve of 0.9878, but attribution analysis shows it has learned that closed canopy hides water from radar, not flood physics. The terrain-and-rainfall model scores 0.9625 on a random split, 0.9474 under spatial-block cross-validation, and 0.8594 in a coastal geographic holdout; its highest-susceptibility tenth contains 49.26 percent of observed flood pixels. District-wide operational evaluation uses a 25,407-node, 59,501-edge road graph, 19 curated hospital origins across nine taluks, and 13 scenario points. At the standardized May 2025 setting, 192 of 247 hospital--scenario pairs remain reachable and 55 are severed; among reachable pairs, flood-aware routing reduces mean exposure from 0.1712 to 0.0655 at a mean 63.075-minute detour. A* explores 13.7 percent fewer nodes than Dijkstra but is 21.3 percent slower in this implementation. A district-spread $3\times3$ dispatch QUBO matches the exact assignment, while QAOA performance is non-monotone with depth and no quantum advantage is claimed.\par}
+
+\vspace{9pt}
+
+{\fontsize{10}{12}\selectfont\raggedright
+{\helv\bfseries\color{accessblue}INDEX TERMS }Emergency dispatch, explainable artificial intelligence, flood-aware routing, flood susceptibility, spatial cross-validation, synthetic aperture radar.\par}
+\end{minipage}
+
+\vspace{16pt}
+\end{@twocolumnfalse}
+]
+
+
+
+
+
+
+
+%==============================================================================
+
+
+
+
+%==============================================================================
+\section{Introduction}
+\label{sec:intro}
+
+Flooding is the most frequently recurring natural hazard in India, and the
+southwestern coastal belt concentrates the mechanisms that make it difficult to
+forecast at a useful spatial scale. Dakshina Kannada district, centred on
+Mangaluru in coastal Karnataka, receives more than \SI{4000}{\milli\metre} of
+rainfall in an average monsoon and drains the Nethravathi and the Gurupura into a
+shared estuary across a coastal plain narrow enough that fluvial discharge and
+tidal stage interact within a few kilometres of the built-up area.
+Extreme-rainfall frequency over this coast is trending
+upward~\citep{chandrashekar2018}, land-use change in the Netravathi basin has
+altered its runoff response~\citep{chandana2023,babar2015}, and the district's
+land cover has itself changed measurably~\citep{naik2022}, so the hazard is
+neither stationary nor purely meteorological. Two recent events frame this study:
+the August 2024 Nethravathi river flood and the May 2025 Mangaluru urban flood.
+Existing work on this basin is static and index-based, for example the geographic information system (GIS) and analytic-hierarchy zoning of \citet{nirmala2026}.
+
+The dominant response in the literature is flood-susceptibility mapping: train a
+classifier on terrain and hydrological conditioning factors against an inventory
+of observed flooding~\citep{tehrany2014,khosravi2018,arabameri2019,saha2021},
+increasingly paired with explainable-AI attribution so the map can be
+interrogated rather than only
+displayed~\citep{lundberg2017,aydin2022,seydi2023}. This work sits in that
+tradition and departs from it in three ways.
+
+\paragraph{The observational premise is usually left implicit}
+Susceptibility studies source an inventory from whatever observations exist, then
+treat the resulting map as a model of flooding in general. The density of that
+record constrains what the map can claim. Over Dakshina Kannada,
+Sentinel-1~\citep{torres2012} coverage is a \emph{single} orbit geometry, a
+descending pass on relative orbit 63, revisiting approximately every twelve days;
+we verified this against the Copernicus archive instead of assuming the
+constellation's global six-day figure applies. The consequence is strict: no
+individual flood here can be mapped from synthetic aperture radar (SAR), because a coastal flash flood peaks
+and recedes well inside the revisit gap, whereas the rapid SAR inundation mapping
+demonstrated elsewhere in India~\citep{arora2023} presumes an acquisition near
+the peak. Section~\ref{sec:method-decomp} sets out the decomposition that
+follows.
+
+\paragraph{Validation is usually optimistic}
+Random $k$-fold cross-validation on geospatial samples leaks information across
+fold boundaries, because neighboring points share terrain, so the score measures
+interpolation within sampled neighborhoods rather than skill at an unvisited
+location~\citep{roberts2017,ploton2020,meyer2021}. AUCs above 0.95 are common in
+this literature and rarely carry a spatial control. We report random $k$-fold,
+spatial-block $k$-fold, and a geographic-transfer test with training entirely
+outside the evaluation window (Section~\ref{sec:res-spatial}).
+
+\paragraph{Free parameters are usually asserted}
+Flood-aware routing introduces a penalty weight and an impassability threshold,
+typically fixed by judgement and never swept. They determine which roads the
+router refuses to use, so they are exactly what an operational deployment would
+be questioned on. Section~\ref{sec:res-sensitivity} reports the full
+$7\times7$ sweep.
+
+\subsection{Contributions}
+\begin{enumerate}
+\itemsep2pt
+\item A two-stage risk decomposition, $\Rxt=\Sx\cdot\Tt$, in which a
+      SAR-flood-frequency-trained static surface is modulated by an independently
+      validated live trigger. The decomposition is derived from a measured
+      satellite-revisit constraint rather than adopted for convenience.
+\item Identification and ablation of a remote-sensing circularity that inflates
+      susceptibility scores in forested coastal catchments, where SAR cannot
+      observe water under canopy and a classifier given land cover learns
+      detectability rather than hazard.
+\item A three-level validation ladder, random split, spatial-block
+      cross-validation, and geographic transfer, quantifying how much reported
+      skill survives each successive removal of spatial leakage.
+\item A complete sensitivity analysis of the routing cost function that
+      distinguishes a genuinely insensitive parameter from one adjacent to a
+      topological discontinuity.
+\item A search-transparent Dijkstra/A$^\ast$ benchmark across 192
+      hospital--scenario pairs, reporting a wall-clock result that runs counter to
+      the node-count result and explaining why.
+\end{enumerate}
+
+Fig.~\ref{fig:architecture} maps the full pipeline. A hybrid quadratic
+unconstrained binary optimization (QUBO) and quantum approximate optimization
+algorithm (QAOA) dispatch layer is also implemented and verified against the
+exact classical optimum. It is reported in Section~\ref{sec:res-qaoa} as a
+feasibility check rather than as a contribution: at the problem size studied
+here the classical assignment solver is exact and effectively instantaneous,
+and no quantum advantage is claimed.
+
+%==============================================================================
+\section{Related Work}
+\label{sec:related}
+
+\subsection{Susceptibility mapping and its validation}
+Tree ensembles dominate the field. \citet{tehrany2014} established the support vector machine (SVM) and frequency-ratio baseline; \citet{khosravi2018} benchmarked multi-criteria
+against machine-learning approaches; \citet{arabameri2019} and \citet{saha2021}
+established random forest and boosted-tree variants as the practical default.
+Reported AUCs cluster between 0.85 and 0.95. \citet{wang2020} and
+\citet{avand2021} extended the approach to data-scarce basins.
+The conditioning factors are largely standardized: elevation, slope, curvature,
+the topographic wetness index~\citep{beven1979}, height above nearest
+drainage~\citep{renno2008,nobre2011}, distance to channel, drainage density and
+rainfall climatology.
+
+Explainability entered the field recently. \citet{lundberg2017} introduced Shapley additive explanations (SHAP);
+\citet{aydin2022} and \citet{seydi2023} applied it to flood susceptibility,
+generally to confirm that elevation and channel proximity dominate. Our SHAP
+analysis is used differently, as a diagnostic that exposed a confound
+(Section~\ref{sec:method-confound}), not as a post-hoc confirmation.
+
+That geospatial models are routinely over-validated is established but
+under-applied. \citet{roberts2017} formalized block cross-validation for
+spatially structured data; \citet{ploton2020} demonstrated that ignoring it
+inflates reported accuracy in remote-sensing regressions; \citet{meyer2021}
+extended the argument to area-of-applicability estimation. Flood-susceptibility
+papers reporting spatial CV remain a minority, which is part of the motivation
+for Section~\ref{sec:res-spatial}.
+
+\subsection{SAR flood mapping}
+SAR change detection for inundation is well established~\citep{martinis2009,
+twele2016,shen2019}, typically with backscatter thresholding against a dry
+reference and a permanent-water mask~\citep{pekel2016}. The recognized limitation
+is that C-band cannot detect water beneath closed
+canopy~\citep{townsend2002,tsyganskaya2018}, which is precisely the mechanism
+behind the confound we isolate. Revisit-limited inventories are usually handled
+by aggregating across many passes into a frequency
+product~\citep{pekel2016,donchyts2016}, the approach adopted here.
+Closest to the present work, \citet{sadhwani2026} combine SAR with elevation data
+in a dual machine-learning scheme for inundation mapping \emph{and} depth
+estimation over the Indian west-coast belt, using the same sensor and terrain
+inputs as this study. Their depth-regression stage is precisely the extension our
+Limitation~1 identifies as the highest-value next step, and the contrast is
+instructive: they target an absolute physical quantity, while the index reported
+here is explicitly relative.
+
+Recent event-stratified experiments by \citet{thasma2026} compare SAR-only,
+SAR--DEM and SAR--land-cover-prior segmentation across multiple backbones and
+seeds, reinforcing the need to report event-to-event transfer rather than only
+pooled accuracy.
+
+\subsection{Routing, dispatch and quantum optimization}
+Risk-weighted shortest-path routing under flooding has an established
+literature~\citep{zhang2019,yin2016}. A$^\ast$~\citep{hart1968} remains the
+standard goal-directed refinement of Dijkstra~\citep{dijkstra1959}, with
+admissibility guaranteeing optimality. Emergency-vehicle siting and allocation is
+itself a mature operations-research field, from maximal-covering
+formulations~\citep{church1974} to the ambulance location and relocation models
+surveyed by \citet{brotcorne2003}; our contribution is not a new formulation but
+the coupling of that assignment to a SAR-grounded, time-varying risk surface.
+Ambulance-to-incident assignment is a classical linear assignment problem solved
+exactly by the Hungarian method~\citep{kuhn1955}, which is why any quantum
+treatment at this scale must be framed as feasibility, never as advantage.
+Temporal planning for coordinated rescue, medical, evacuation and logistics
+actions has also been demonstrated on synthetic flood benchmarks by
+\citet{siddiqui2026}; its stated need for real operational validation motivates
+the conservative feasibility framing used here.
+
+QAOA~\citep{farhi2014} approximates combinatorial optima on gate-model hardware;
+\citet{lucas2014} gives the standard Ising encodings, including assignment.
+\citet{zhou2020} introduced the INTERP parameter-transfer heuristic used here.
+Known obstacles, barren plateaus~\citep{mcclean2018} and noise-limited depth,
+mean that near-term demonstrations at practical scale remain out of reach; our
+scoping in Section~\ref{sec:res-qaoa} reflects that.
+
+\subsection{Gap}
+No prior work we are aware of combines an inventory that is explicit about
+single-orbit revisit limits, a trigger validated against documented events
+without fitting, a routing layer with a complete parameter sweep and a
+search-transparent algorithm comparison, and a dispatch layer verified against
+the exact classical optimum, applied to one Indian coastal district with every
+number reproducible from public data.
+
+%==============================================================================
+\section{Study Area and Data}
+\label{sec:study}
+
+\subsection{Study area}
+Dakshina Kannada district occupies the coastal plain and lower Western Ghats
+scarp of southwestern Karnataka (Fig.~\ref{fig:study_area}). The modeling
+domain is the bounding box $[74.776108^\circ, 12.460086^\circ]$ to
+$[75.670642^\circ, 13.185163^\circ]$. Routing is evaluated over the resulting
+district-wide road graph; geographic transfer uses a coastal SAR footprint
+within the district. Table~\ref{tab:study} summarizes the physical
+setting as measured from the assembled data stack, not quoted from
+secondary sources.
+
+Three features of the setting drive the methodology. First, relief is extreme
+over short distances: elevation in the sampled floodable domain spans
+\SIrange{-5}{279}{\metre}, with the Ghats escarpment rising steeply inland, so
+runoff concentration times are short and flood peaks are flashy. Second, the
+coastal strip is low and tidally influenced, so the estuary can impound river
+discharge, a coupling that a rainfall-only trigger captures only indirectly.
+Third, land cover in the low-lying non-flooded fraction of the district is
+predominantly closed-canopy vegetation, which is the mechanism underlying the
+SAR detectability confound examined in Section~\ref{sec:method-confound}.
+
+\begin{table*}[!t]
+\centering\footnotesize
+\caption{Study-area characteristics. Terrain and rainfall statistics are computed
+over the sampled floodable-lowland domain ($n=\num{3000}$ points); network
+statistics are from the district-wide OpenStreetMap drivable graph.}
+\label{tab:study}
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Property} & \textbf{Value} & \textbf{Source} \\
+\midrule
+District & Dakshina Kannada, Karnataka, India & FAO GAUL \\
+Modeling bounding box & $74.776108^\circ$--$75.670642^\circ$E, $12.460086^\circ$--$13.185163^\circ$N & OSM Nominatim \\
+Operational raster & \SI{120}{\metre}, nine factors & this study \\
+Principal rivers & Nethravathi, Gurupura (shared estuary) & MERIT Hydro \\
+Elevation range (sampled) & \SIrange{-5}{279}{\metre} & SRTM \\
+HAND range (sampled) & \SIrange{0}{79.4}{\metre} & MERIT Hydro \\
+Mean annual rainfall & \SIrange{3373}{4401}{\milli\metre} (mean \num{4124}) & CHIRPS 2020--2024 \\
+Monsoon regime & Southwest, June--September & IMD \\
+Sentinel-1 coverage & 1 orbit (descending, rel.\ orbit 63) & Copernicus \\
+Nominal SAR revisit & \SI{12}{\day} & Copernicus \\
+Road graph & \num{25407} nodes, \num{59501} directed edges & OpenStreetMap \\
+Flood-prone edges ($S>0.5$) & \num{9886} (16.61\%) & this study \\
+Hospital routing origins & 19 across nine taluks & curated OSM inventory \\
+Scenario points & 13 & this study \\
+OSM snapshot / audit date & 11 September 2026 & this study \\
+\bottomrule
+\multicolumn{3}{@{}l@{}}{\footnotesize SRTM: Shuttle Radar Topography Mission; CHIRPS: Climate Hazards group Infrared Precipitation with Stations; IMD: India Meteorological Department; FAO GAUL: Food and Agriculture Organization Global Administrative Unit Layers; HAND: height above nearest drainage.}\\
+\end{tabular}
+\end{table*}
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=\linewidth]{figures/study_area.pdf}
+\caption{Study area. (a) India with Karnataka shaded and Mangaluru marked.
+(b) Karnataka with the Dakshina Kannada district domain. (c) District-wide
+hillshaded terrain, channel network, road coverage, 19 curated hospital routing
+origins, and 13 scenario points. Inclusion as a routing origin does not verify
+emergency specialty, bed availability, or real-time service capability.}
+\label{fig:study_area}
+\end{figure*}
+
+\subsection{Documented events}
+Two events anchor the temporal validation. The August 2024 Nethravathi flood
+followed sustained catchment wetting, \SI{216.9}{\milli\metre} over the
+preceding \SI{72}{\hour}, with a comparatively modest \SI{53.4}{\milli\metre}
+in the final \SI{24}{\hour}. The May 2025 Mangaluru urban flood combined a high
+24-hour total (\SI{87.2}{\milli\metre}, IMD ``Heavy'') with a similarly saturated
+antecedent state (\SI{205.6}{\milli\metre}/\SI{72}{\hour}). Their contrasting
+structure, one saturation-driven, one intensity-driven, is what makes them a
+useful pair for testing a trigger that weights both. Full inputs are in
+Table~\ref{tab:trigger}.
+
+\subsection{Data sources}
+All inputs are public and ingested programmatically (Table~\ref{tab:data}).
+Satellite and terrain layers are processed server-side on Google Earth
+Engine~\citep{gorelick2017}; only sampled and aggregated outputs are downloaded.
+
+\begin{table*}[!t]
+\centering\footnotesize
+\caption{Data sources. Every layer is public; none is hand-authored or
+simulated.}
+\label{tab:data}
+\small
+\begin{tabular}{@{}lllp{5.0cm}@{}}
+\toprule
+\textbf{Source} & \textbf{Product} & \textbf{Resolution} & \textbf{Role} \\
+\midrule
+Sentinel-1~\citep{torres2012} & GRD IW, VV+VH, rel.\ orbit 63 & \SI{10}{\metre} & Multi-temporal flood-frequency inventory \\
+JRC GSW~\citep{pekel2016} & Water occurrence & \SI{30}{\metre} & Permanent-water exclusion mask \\
+SRTM~\citep{farr2007} & Digital elevation model & \SI{30}{\metre} & Elevation, slope, aspect, curvature \\
+MERIT Hydro~\citep{yamazaki2019} & HAND, upstream area & \SI{90}{\metre} & HAND, TWI, distance to river, drainage density \\
+CHIRPS~\citep{funk2015} & Daily precipitation & \SI{5}{\kilo\metre} & Mean annual rainfall climatology \\
+ESA WorldCover~\citep{zanaga2021} & Land cover & \SI{10}{\metre} & Ablation only (excluded from primary model) \\
+Sentinel-2 & Surface reflectance & \SI{10}{\metre} & NDVI; ablation only \\
+Open-Meteo / ERA5~\citep{hersbach2020} & Hourly precipitation & point & Live and archived antecedent rainfall \\
+WorldTides & Tide height & point & Acquired for the live dashboard; \emph{not} used in $\Tt$ (\S\ref{sec:limitations}) \\
+OpenStreetMap & Drivable road network & vector & Routing graph~\citep{boeing2017} \\
+Natural Earth & Administrative outlines & \SI{10}{\metre} scale & Cartography only \\
+\bottomrule
+\multicolumn{4}{@{}l@{}}{\footnotesize GRD: ground range detected; IW: interferometric wide swath; VV/VH: co-polarized and cross-polarized channels; JRC GSW: Joint Research Centre Global Surface Water; NDVI: normalized difference vegetation index; ERA5: fifth-generation ECMWF reanalysis.}\\
+\end{tabular}
+\end{table*}
+
+%==============================================================================
+\section{Methodology}
+\label{sec:method}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  node distance=4.2mm and 8mm,
+  % Borderless: a light fill alone separates the stages, so the diagram carries
+  % no rule weight it does not need.
+  box/.style={rounded corners=2pt, align=center, fill=black!5,
+              font=\scriptsize, minimum width=6.6cm, minimum height=0.66cm},
+  boxq/.style={box, fill=orange!12},
+  boxv/.style={box, fill=teal!12},
+  arr/.style={-{Latex[length=2mm]}, thick}
+]
+\node[box] (data) {\textbf{Data ingestion}\;: Sentinel-1, SRTM, MERIT Hydro, CHIRPS,\\ Open-Meteo/ERA5, OpenStreetMap};
+\node[box, below=of data] (sar) {\textbf{SAR flood-frequency inventory}\;: dry-season change detection,\\ permanent-water masking, 20 monsoon passes};
+\node[box, below=of sar] (model) {\textbf{Static susceptibility} $\Sx$\;: 9 conditioning factors,\\ VIF screening, XGBoost, SHAP, isotonic calibration};
+\node[boxv, below=of model] (valid) {\textbf{Validation ladder}\;: random split $\rightarrow$ spatial-block CV\\ $\rightarrow$ geographic transfer vs.\ SAR};
+\node[box, below=of valid] (trigger) {\textbf{Dynamic trigger} $\Tt$\;: 6/24/\SI{72}{\hour} antecedent rainfall,\\ IMD category thresholds (rainfall only; see \S\ref{sec:limitations})};
+\node[box, below=of trigger] (fusion) {\textbf{Risk fusion}\;: $\Rxt=\Sx\cdot\Tt$};
+\node[box, below=of fusion] (graph) {\textbf{Flood-aware graph}\;: per-edge risk, cost $=t(e)(1+\kappa R(e))$,\\ impassability at $R\ge\tau$};
+\node[box, below=of graph] (route) {\textbf{Classical routing}\;: hand-implemented Dijkstra and A$^\ast$,\\ admissibility-verified heuristic, explored-set instrumentation};
+\node[boxq, below=of route] (qaoa) {\textbf{Hybrid dispatch}\;: $3\times3$ assignment $\rightarrow$ 9-qubit QUBO\\ $\rightarrow$ QAOA (INTERP), verified vs.\ Hungarian};
+\node[box, below=of qaoa] (pin) {\textbf{On-demand dispatch}\;: arbitrary incident pin, live routing,\\ nearest-hospital notification};
+
+\foreach \a/\b in {data/sar, sar/model, model/valid, valid/trigger, trigger/fusion,
+                   fusion/graph, graph/route, route/qaoa, qaoa/pin}
+  \draw[arr] (\a) -- (\b);
+\end{tikzpicture}
+\caption{Pipeline. The two-stage split into a static SAR-trained surface and a
+dynamic live trigger (shaded path through $\Sx$ and $\Tt$) is a direct
+consequence of the twelve-day single-orbit revisit established in
+Section~\ref{sec:intro}, not a modeling preference.}
+\label{fig:architecture}
+\end{figure}
+
+\subsection{Why the risk model is decomposed}
+\label{sec:method-decomp}
+A fully spatiotemporal flood model would estimate inundation
+$I(\mathbf{x},t)$ jointly in space and time. Fitting such a model requires
+observations resolved at the timescale of the process. With one usable SAR orbit
+at a twelve-day cadence, the observational record cannot constrain the temporal
+dimension at all. We therefore factor the problem:
+\begin{equation}
+\Rxt \;=\; \Sx \cdot \Tt,
+\qquad \Sx\in[0,1],\;\; \Tt\in[0,1],
+\label{eq:fusion}
+\end{equation}
+where $\Sx$ is a time-invariant relative propensity estimated from the
+\emph{frequency} of observed flooding across all available passes, and $\Tt$ is a
+spatially uniform scalar estimated from meteorological data available at hourly
+cadence. The factorization assigns each term to the data that can actually
+constrain it. Its cost is an explicit modeling assumption, that the spatial
+pattern of relative risk does not change with event magnitude, which we return to
+in Section~\ref{sec:limitations}.
+
+\subsection{SAR flood-frequency inventory}
+For each monsoon window (1 June--30 September 2024; 15 May--30 September 2025),
+every Sentinel-1 GRD scene matching the fixed orbit geometry is speckle-filtered
+with a \SI{30}{\metre} focal median and thresholded for open water:
+\begin{equation}
+W_k(\mathbf{x}) \;=\;
+\mathbb{1}\!\left[\sigma^0_{VV,k}(\mathbf{x}) < \SI{-16}{\deci\bel}\right]\cdot
+\mathbb{1}\!\left[\sigma^0_{VH,k}(\mathbf{x}) < \SI{-22}{\deci\bel}\right],
+\label{eq:water}
+\end{equation}
+where $\sigma^0_{VV,k}$ and $\sigma^0_{VH,k}$ are calibrated backscatter
+coefficients for pass $k$. A pixel counts as \emph{flooded} on pass $k$ only if it
+is water then and dry in a January--February baseline, and is not permanent water:
+\begin{equation}
+F_k(\mathbf{x}) \;=\; W_k(\mathbf{x})\cdot\bigl(1-W_{\text{dry}}(\mathbf{x})\bigr)
+\cdot\mathbb{1}\!\left[O_{\text{JRC}}(\mathbf{x}) < 80\%\right],
+\label{eq:floodpass}
+\end{equation}
+with $O_{\text{JRC}}$ the JRC Global Surface Water occurrence~\citep{pekel2016}.
+The inventory is the normalized frequency over the $K=20$ qualifying passes:
+\begin{equation}
+\Phi(\mathbf{x}) \;=\; \frac{1}{K}\sum_{k=1}^{K} F_k(\mathbf{x}) \;\in\; [0,1].
+\label{eq:freq}
+\end{equation}
+Vectorizing $\Phi>0$ over the coastal SAR footprint yields 201 polygons totalling
+\SI{2.86}{\kilo\metre\squared} (Fig.~\ref{fig:sar_inventory}). This area is a
+\emph{lower bound} on flooding that occurred, not a flood map: it records only
+what was inundated at the instants the satellite happened to look.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/sar_inventory.pdf}
+\caption{The multi-temporal SAR flood inventory over the coastal footprint: 201
+polygons, \SI{2.86}{\kilo\metre\squared}, on a HAND backdrop with the channel
+network and estuary. Observed flooding concentrates in the low-HAND corridors
+flanking the Gurupura and Nethravathi and along the tidal margin.}
+\label{fig:sar_inventory}
+\end{figure}
+
+\subsection{Conditioning factors and collinearity screening}
+Twelve candidate factors were computed
+(Fig.~\ref{fig:conditioning}). TWI and the stream power index follow the
+standard definitions~\citep{beven1979}:
+\begin{equation}
+\mathrm{TWI} = \ln\!\left(\frac{a}{\tan\beta}\right),
+\qquad
+\mathrm{SPI} = \ln\!\left(a\,\tan\beta\right),
+\label{eq:twi}
+\end{equation}
+with $a$ the specific catchment area (\si{\metre\squared}) and $\beta$ the local
+slope. HAND is the elevation of a pixel above the nearest hydrologically
+connected drainage cell~\citep{renno2008,nobre2011}.
+
+Collinearity was screened by the variance inflation factor (VIF),
+\begin{equation}
+\mathrm{VIF}_j \;=\; \frac{1}{1-R_j^2},
+\label{eq:vif}
+\end{equation}
+where $R_j^2$ is the coefficient of determination of factor $j$ regressed on all
+others. As Table~\ref{tab:factors} shows, TWI and SPI are mutually collinear by
+construction, both being functions of $a$ and $\tan\beta$; with both present they
+score 16.22 and 14.50. Removing SPI reduces TWI to 1.49 and leaves every retained
+factor below 3.5, comfortably under the conventional threshold of 10.
+
+\begin{table*}[!t]
+\centering\footnotesize
+\caption{Conditioning factors. VIF is reported both with SPI present (11 numeric
+candidates) and for the retained primary set. SPI is dropped because it and TWI
+are algebraically coupled through specific catchment area and slope; removing one
+resolves both.}
+\label{tab:factors}
+\small
+\begin{tabular}{@{}llrrl@{}}
+\toprule
+\textbf{Factor} & \textbf{Definition / units} & \textbf{VIF (11)} & \textbf{VIF (9)} & \textbf{Source} \\
+\midrule
+Elevation & Height above sea level (\si{\metre}) & 3.87 & 3.46 & SRTM \\
+Slope & Terrain gradient (\si{\degree}) & 3.72 & 1.54 & SRTM \\
+Aspect & Slope azimuth (\si{\degree}) & 1.04 & 1.01 & SRTM \\
+Curvature & Laplacian of elevation (--) & 1.10 & 1.10 & SRTM \\
+HAND & Height above nearest drainage (\si{\metre}) & 2.91 & 2.85 & MERIT Hydro \\
+TWI & $\ln(a/\tan\beta)$ (--) & 16.22 & 1.49 & MERIT Hydro \\
+Distance to river & Euclidean distance to channel (\si{\metre}) & 2.71 & 2.71 & MERIT Hydro \\
+Drainage density & Channel fraction in \SI{1}{\kilo\metre} neighborhood (--) & 2.21 & 2.19 & MERIT Hydro \\
+Annual rainfall & 2020--2024 mean (\si{\milli\metre}) & 2.16 & 2.14 & CHIRPS \\
+\midrule
+\multicolumn{5}{@{}l@{}}{\emph{Dropped:}} \\
+SPI & $\ln(a\tan\beta)$ (--) & 14.50 & -- & VIF $>10$ \\
+NDVI & Normalized difference vegetation index & 1.52 & -- & Confound (Sec.~\ref{sec:method-confound}) \\
+Land cover & ESA WorldCover class & -- & -- & Confound (Sec.~\ref{sec:method-confound}) \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=\linewidth]{figures/conditioning_factors.pdf}
+\caption{The nine conditioning factors of the primary model over the Mangaluru
+window. The channel network is visible as low-slope, high-TWI, low-HAND
+corridors; the coarse CHIRPS grid is apparent in the rainfall panel and is a
+known resolution limit of that product.}
+\label{fig:conditioning}
+\end{figure*}
+
+\subsection{Sampling with terrain-matched negatives}
+Training points are drawn by stratified sampling, \num{1500} per class, under two
+constraints. Positives require $\Phi(\mathbf{x})\ge 0.05$; negatives require
+$\Phi(\mathbf{x})=0$ \emph{and} a distance of at least \SI{120}{\metre} from any
+flood pixel, which removes the ambiguous halo around observed flooding. Both
+classes are confined to a floodable-lowland domain,
+\begin{equation}
+\mathcal{D} \;=\; \bigl\{\mathbf{x} \;:\; z(\mathbf{x}) \le \SI{280}{\metre}
+\;\wedge\; h(\mathbf{x}) \le \SI{80}{\metre}\bigr\},
+\label{eq:domain}
+\end{equation}
+with $z$ elevation and $h$ HAND, both thresholds set at the 90th percentile of
+the flood-pixel distribution. Without $\mathcal{D}$ the negative class would be
+drawn largely from forested uplands, and the classifier could separate the
+classes on elevation alone without learning anything flood-specific. This
+elevation- and HAND-matching of negatives is, in our assessment, the single
+decision that most affects whether the reported scores mean anything.
+
+\subsection{A remote-sensing confound, and its removal}
+\label{sec:method-confound}
+The first model trained on all twelve factors reached a test area under the receiver operating characteristic curve (ROC-AUC) of 0.9878.
+SHAP attribution, however, ranked land cover and NDVI as the two most important
+predictors, ahead of elevation and HAND (Fig.~\ref{fig:spatial}c). Inspecting
+the sample explained why: within the floodable-lowland domain, non-flood pixels
+are overwhelmingly closed-canopy vegetation. C-band SAR cannot observe standing
+water beneath a closed canopy~\citep{townsend2002,tsyganskaya2018}. A pixel under
+forest is therefore labeled ``not observed flooded'' for a sensing reason, not a
+hydrological one, and a model given land cover can achieve high accuracy by
+learning \emph{where SAR can see the ground}, not where water collects.
+
+This is circularity, not signal, and it would have transferred a spurious model
+into an operational routing system. We therefore define the primary feature set
+as terrain and rainfall only, nine factors, and retain the twelve-factor model
+solely as a sensitivity analysis. Section~\ref{sec:res-ablation} quantifies the
+cost of this decision: 0.9878 to 0.9625 in test ROC-AUC, with the SHAP ranking
+reverting to elevation, HAND, distance to river, rainfall and TWI, an ordering
+consistent with the physical literature.
+
+\subsection{Classifier, calibration and explanation}
+Random forest~\citep{breiman2001} and XGBoost~\citep{chen2016} were trained on a
+70/30 stratified split, with 5-fold cross-validation on the training portion.
+XGBoost was selected on test ROC-AUC.
+
+Raw tree-ensemble scores are ranking outputs, not probabilities
+\citep{niculescu2005}, so we calibrate with isotonic
+regression~\citep{zadrozny2002} fitted by cross-validation on the training split
+alone, and evaluate with the Brier score~\citep{brier1950}. Because the training
+sample is class-balanced while the landscape is not, the calibrated score is
+tied to a $0.5$ prior; Section~\ref{sec:res-calibration} quantifies this and
+applies the standard prior correction \citep{elkan2001,saerens2002}:
+\begin{equation}
+\mathrm{BS} \;=\; \frac{1}{n}\sum_{i=1}^{n}\bigl(\hat{p}_i - y_i\bigr)^2,
+\label{eq:brier}
+\end{equation}
+with $\hat{p}_i$ the predicted probability and $y_i\in\{0,1\}$ the label. Isotonic
+regression finds the monotone $g$ minimizing $\sum_i (g(s_i)-y_i)^2$ over the
+raw scores $s_i$, so calibration cannot reorder predictions and therefore cannot
+alter AUC by construction.
+
+Feature attribution uses SHAP values~\citep{lundberg2017}, the Shapley
+decomposition of a prediction over feature subsets:
+\begin{equation}
+\phi_j \;=\; \sum_{\mathcal{S}\subseteq \mathcal{F}\setminus\{j\}}
+\frac{|\mathcal{S}|!\,\bigl(|\mathcal{F}|-|\mathcal{S}|-1\bigr)!}{|\mathcal{F}|!}
+\Bigl[f\bigl(\mathcal{S}\cup\{j\}\bigr) - f(\mathcal{S})\Bigr],
+\label{eq:shap}
+\end{equation}
+with $\mathcal{F}$ the feature set; we report $\overline{|\phi_j|}$ over the test
+split.
+
+\subsection{The validation ladder}
+\label{sec:method-validation}
+Three successively stricter protocols are reported.
+
+\textbf{(i) Random split.} Standard stratified 70/30 with 5-fold CV. Comparable
+to published practice, and optimistic for the reasons below.
+
+\textbf{(ii) Spatial-block cross-validation.} Samples are assigned to
+$0.05^\circ$ ($\approx\SI{5.5}{\kilo\metre}$) blocks and whole blocks are held
+out~\citep{roberts2017}, so no test point shares a neighborhood with a training
+point. The block size exceeds the terrain autocorrelation range in this setting.
+
+\textbf{(iii) Geographic transfer.} The strictest test. The model is trained
+\emph{only} on the \num{2589} labeled points outside the coastal SAR footprint
+plus a $0.01^\circ$ buffer, then predicts the \num{21365} valid pixels inside
+that footprint and is scored against the SAR polygons observed there. The
+\num{411} labeled points inside are withheld entirely. This is a strict
+within-district coastal holdout, not evidence of cross-district transfer.
+
+For (iii) we report ROC-AUC, hit rate (probability of detection),
+false-alarm ratio and critical success index:
+\begin{equation}
+\begin{aligned}
+\mathrm{POD}&=\tfrac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FN}}, \qquad
+\mathrm{FAR}=\tfrac{\mathrm{FP}}{\mathrm{TP}+\mathrm{FP}}, \\[2pt]
+\mathrm{CSI}&=\tfrac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FP}+\mathrm{FN}},
+\end{aligned}
+\label{eq:contingency}
+\end{equation}
+together with the success-rate curve~\citep{chung2003}, the cumulative fraction
+of observed flooding captured as the landscape is ranked by descending
+susceptibility. Introduced for landslide-hazard validation and standard in
+susceptibility mapping since, the success-rate curve is the appropriate headline
+metric here, because FAR and CSI
+are severely distorted by the fact that SAR-observed flooding covers only 0.95\%
+of the window and absence of observation is not evidence of dryness.
+
+\subsection{Dynamic trigger}
+\label{sec:method-trigger}
+The trigger maps antecedent rainfall to $[0,1]$ through three terms referenced to
+India Meteorological Department daily-rainfall categories, without any parameter
+fitted to the events it is later tested on:
+\begin{equation}
+\begin{aligned}
+\Tt \;=\; \min\Bigl(\;
+&\underbrace{0.5\,\tfrac{\min(P_{24},\,\theta_{\mathrm{VH}})}{\theta_{\mathrm{VH}}}}_{\text{daily intensity}}
+\;+\; \underbrace{0.3\,\tfrac{\min(P_{72},\,\theta_{\mathrm{sat}})}{\theta_{\mathrm{sat}}}}_{\text{catchment saturation}} \\[2pt]
+&+\; \underbrace{0.2\,\tfrac{\min(P_{6},\,\theta_{\mathrm{H}})}{\theta_{\mathrm{H}}}}_{\text{short burst}},
+\;\; 1 \Bigr),
+\end{aligned}
+\label{eq:trigger}
+\end{equation}
+where $P_{6},P_{24},P_{72}$ are trailing rainfall totals (\si{\milli\metre}) over
+6, 24 and \SI{72}{\hour}; $\theta_{\mathrm{H}}=\SI{64.5}{\milli\metre}$ (IMD
+Heavy) and $\theta_{\mathrm{VH}}=\SI{115.6}{\milli\metre}$ (IMD Very Heavy) are
+published category thresholds; and $\theta_{\mathrm{sat}}=\SI{200}{\milli\metre}$
+is a saturation reference. We note explicitly that while $\theta_{\mathrm{H}}$
+and $\theta_{\mathrm{VH}}$ are published IMD category boundaries, the three
+weights and $\theta_{\mathrm{sat}}$ are chosen by us: $\theta_{\mathrm{sat}}$ is
+a round value on the order of the wet-season soil-moisture storage of these
+catchments, not a measured constant. Section~\ref{sec:res-trigger-sweep} sweeps
+all four. The three-term structure encodes the physical premise
+that a saturated catchment floods on less additional rain. Equation~\eqref{eq:trigger}
+is monotone non-decreasing in each $P$ by construction, a property we verify
+numerically rather than assert (Section~\ref{sec:res-trigger}). The outer
+$\min(\cdot,1)$ is redundant at the operating weights, since they sum to one and
+each term is individually capped, but is retained because
+Section~\ref{sec:res-trigger-sweep} evaluates weightings for which it binds.
+
+For live district operation, Eq.~\eqref{eq:trigger} is evaluated at Mangaluru,
+Moodbidri, Bantwal, Puttur and Sullia and the conservative maximum is applied
+district-wide. This improves monitoring coverage but does not remove the
+spatially uniform-trigger assumption. Tide is displayed separately and is not an
+input to $T(t)$.
+
+\subsection{Flood-aware graph and routing}
+\label{sec:method-routing}
+The exact district drivable network is extracted from OpenStreetMap
+(\num{25407} nodes, \num{59501} directed edges) and each edge is sampled at its
+midpoint against the \SI{120}{\metre}, nine-factor susceptibility raster
+produced by the serialized XGBoost model. Raster no-data cells are filled by
+nearest valid values solely for road sampling; no road midpoint fell outside the
+raster in this run. Edge cost
+under trigger $T$ is
+\begin{align}
+c(e) \;&=\;
+\begin{cases}
+t(e)\,\bigl(1+\kappa\,R(e)\bigr), & R(e) < \tau,\\[2pt]
+\infty, & R(e) \ge \tau,
+\end{cases} \nonumber\\[2pt]
+R(e) &= S(e)\cdot T,
+\label{eq:edgecost}
+\end{align}
+with $t(e)$ free-flow travel time (\si{\second}), $\kappa$ a dimensionless
+penalty weight and $\tau$ the impassability threshold. The operating point is
+$\kappa=8$, $\tau=0.60$; Section~\ref{sec:res-sensitivity} sweeps both.
+
+Dijkstra~\citep{dijkstra1959} and A$^\ast$~\citep{hart1968} are implemented
+explicitly, not called from a graph library, specifically so the set of
+nodes each expands is observable; that set is the object of comparison. The
+A$^\ast$ heuristic is a straight-line travel-time lower bound,
+\begin{equation}
+h(u,g) \;=\; \frac{d_{\mathrm{hav}}(u,g)}{v_{\max}},
+\qquad v_{\max}=\SI{22}{\metre\per\second},
+\label{eq:heuristic}
+\end{equation}
+with $d_{\mathrm{hav}}$ the haversine distance. Admissibility requires
+\begin{equation}
+h(u,g) \;\le\; h^{*}(u,g) \quad \forall u,
+\label{eq:admissible}
+\end{equation}
+where $h^{*}$ is true optimal remaining cost. Since no edge in the graph permits
+travel faster than $v_{\max}$ and the haversine distance lower-bounds path
+length, \eqref{eq:admissible} holds; we additionally verify it numerically
+against the graph's own edge weights before reporting any result, and cross-check
+both implementations against \texttt{networkx} as a third reference.
+
+\subsection{Quantum dispatch: formulation}
+\label{sec:method-qaoa}
+A \num{59501}-edge routing problem is far beyond exact quantum simulation, so the
+quantum layer is applied only where the problem is genuinely small: assigning
+$n$ ambulances to $n$ incidents.
+
+It is worth being explicit about what this layer is and is not for, because the
+classical and quantum components of this paper serve different time horizons. The
+graph layer of Section~\ref{sec:method-routing} is the operational component: it
+runs on commodity hardware, on a real network, today. Linear assignment as posed
+here is not a bottleneck in that pipeline. It is solvable exactly in $O(n^3)$ by
+the Hungarian algorithm~\citep{kuhn1955}, and at the fleet sizes a district of
+this size operates, the classical solver is exact and effectively instantaneous.
+No quantum method improves on that, and none is claimed to.
+
+The reason to state the assignment as a quadratic unconstrained binary
+optimization problem at all is that the operational dispatch problem does not stay
+linear. The realistic extensions, capacitated vehicles, time windows, sequential
+re-assignment as the flood evolves, and multiple incidents per vehicle, are
+NP-hard, and QUBO or Ising form is the standard route by which such problems are
+posed for annealing and gate-model
+solvers~\citep{lucas2014,glover2019,fitzek2024}. Those formulations cannot be
+checked against an exact optimum at useful sizes, which is precisely why the
+encoding, the penalty construction and the parameter-transfer schedule should be
+validated first on the case where ground truth is computable. That is the role of
+this section: it verifies the machinery, not the advantage. Establishing that the
+QUBO ground state coincides with the Hungarian optimum, and characterising how
+the approximation ratio behaves with circuit depth, is what would make a later
+comparison on NP-hard dispatch variants, or on physical hardware, interpretable
+rather than anecdotal.
+
+\paragraph{Why $n=3$ when the operational evaluation is district-wide}
+The one-hot encoding below needs $n^2$ qubits. Exact statevector simulation and
+brute-force ground-state verification grow exponentially, whereas at $n=3$ the
+state space is only 512 amplitudes and every check remains exact. We therefore
+solve a district-spread $3\times3$ instance: Wenlock District Hospital, Puttur
+General Hospital and Sullia Taluk Hospital are assigned to scenarios at Mulki,
+Belthangady and Subrahmanya. The cost matrix $C$ comes from the same flood-aware
+routing layer used throughout, so the quantum stage consumes the paper's own
+risk surface rather than a synthetic instance. The reduction is a constraint of
+exact simulation and verification, not of the formulation:
+Equations~\eqref{eq:qubo}--\eqref{eq:qaoa} are stated for general $n$.
+
+With binary $x_{ai}=1$ iff ambulance $a$ serves incident $i$, and risk-aware
+travel times $C_{ai}$ from the classical layer, the QUBO is
+\begin{equation}
+\begin{aligned}
+\min_{x\in\{0,1\}^{n^2}}\; \sum_{a,i} C_{ai}x_{ai}
+\;&+\; P\sum_{a}\Bigl(\sum_i x_{ai}-1\Bigr)^{2} \\[2pt]
+&+\; P\sum_{i}\Bigl(\sum_a x_{ai}-1\Bigr)^{2},
+\end{aligned}
+\label{eq:qubo}
+\end{equation}
+with penalty $P=2\max_{a,i}C_{ai}+1$, which is sufficient to make every
+constraint-violating state higher in energy than any feasible one. Substituting
+$x_j=(1-z_j)/2$, $z_j\in\{-1,+1\}$ gives the Ising cost
+Hamiltonian~\citep{lucas2014}
+\begin{equation}
+H_C \;=\; \sum_{j<k} J_{jk}\,\sigma^z_j\sigma^z_k \;+\; \sum_j h_j\,\sigma^z_j
+\;+\; \mathrm{const}.
+\label{eq:ising}
+\end{equation}
+QAOA~\citep{farhi2014} prepares
+\begin{equation}
+\lvert\psi_p(\boldsymbol\gamma,\boldsymbol\beta)\rangle \;=\;
+\prod_{\ell=1}^{p} e^{-i\beta_\ell H_B}\,e^{-i\gamma_\ell H_C}\,
+\lvert +\rangle^{\otimes n^2},
+\;\; H_B=\sum_j \sigma^x_j,
+\label{eq:qaoa}
+\end{equation}
+minimizing $\langle\psi_p\lvert H_C\rvert\psi_p\rangle$ over
+$(\boldsymbol\gamma,\boldsymbol\beta)$ by constrained optimization by linear approximation (COBYLA)~\citep{powell1994}, a
+derivative-free trust-region method appropriate here because the expectation is
+evaluated exactly but has no cheap analytic gradient. Depth $p+1$ is warm-started
+from depth $p$ by the INTERP rule~\citep{zhou2020}, linearly interpolating the
+optimized schedule onto a finer grid. Quality is reported as the approximation
+ratio
+\begin{equation}
+r \;=\; \frac{E_{\max}-\langle H_C\rangle}{E_{\max}-E_{\min}} \;\in\; [0,1],
+\label{eq:ratio}
+\end{equation}
+with $E_{\min},E_{\max}$ from exact enumeration of all $2^{n^2}$ states. For
+$n=3$ this is 9 qubits and 512 states, so the ground state is verified by brute
+force \emph{and} against the Hungarian algorithm~\citep{kuhn1955} on the raw cost
+matrix. Simulation is exact statevector; no physical quantum hardware is used.
+
+Because COBYLA is a local optimizer on a non-convex landscape, a single run at
+depth $p$ is one draw from a distribution, not the performance at that
+depth. We therefore repeat every depth over five random seeds and report mean and
+standard deviation.
+
+\subsection{Implementation}
+The pipeline is Python 3.13 with pinned dependencies: \texttt{earthengine-api}
+and \texttt{geemap} for server-side processing, \texttt{scikit-learn}
+\citep{pedregosa2011}, \texttt{xgboost} \citep{chen2016} and \texttt{shap}
+\citep{lundberg2017} for modeling, \texttt{osmnx} \citep{boeing2017} and
+\texttt{networkx} for network acquisition and reference validation,
+\texttt{geopandas}/\texttt{rasterio}/\texttt{shapely} for geometry,
+\texttt{numpy} \citep{harris2020} and \texttt{scipy} \citep{virtanen2020} for the
+statevector simulation and the Hungarian reference solver, and
+\texttt{matplotlib} \citep{hunter2007} for all figures. Artifacts are built
+by a dependency-aware Makefile, so a full rebuild regenerates every number and
+figure reported here from source data. A suite of 84 automated tests encodes the
+methodological invariants as executable assertions, including class balance and
+domain confinement of the sample, $\mathrm{VIF}<10$ for all retained factors,
+monotonicity of $\Tt$, heuristic admissibility, agreement of Dijkstra, A$^\ast$
+and \texttt{networkx} on every benchmarked path, and equality of the QUBO ground
+state with the Hungarian optimum. Every experiment reported here ran on one Apple
+M3 Pro workstation with \SI{18}{\giga\byte} RAM. Apart from the server-side
+raster work that Earth Engine performs on its own infrastructure, no additional
+compute was needed.
+
+%==============================================================================
+\section{Results and Discussion}
+\label{sec:results}
+
+\subsection{Feature-set ablation: the price of removing circularity}
+\label{sec:res-ablation}
+
+Table~\ref{tab:ablation} reports the ablation ladder. The twelve-factor model is
+the strongest by every metric, and is the model we discard. Its SHAP ranking
+places land cover first and NDVI second; once both are removed the ranking
+becomes elevation, HAND, distance to river, annual rainfall, TWI, which is the
+ordering the flood-susceptibility literature reports on independent study
+regions~\citep{arabameri2019,saha2021,aydin2022}. Dropping SPI on collinearity
+grounds costs essentially nothing (0.9878 to 0.9872), confirming it carried no
+independent information. Dropping NDVI and land cover costs 0.025 AUC and 0.038
+$F_1$.
+
+We regard the 0.9625 figure as the honest one and the 0.9878 as an artifact of
+sensor physics. A reviewer comparing this work against papers reporting
+0.98--0.99 on similar data should be aware that the difference may be a
+methodological choice, not a modeling deficiency.
+
+\paragraph{A smaller version of the same problem, in a factor we retained}
+Having built the argument above, it would be inconsistent not to apply the same
+scepticism to the surviving features, and one does not fully survive it. CHIRPS
+has a $0.05^\circ$ ($\approx\SI{5.5}{\kilo\metre}$) grid, so the coastal footprint
+contains only 17 distinct rainfall values across \num{292125} pixels, yet SHAP
+ranks \texttt{rain\_annual} fourth. A variable that coarse cannot be resolving
+fine-scale hydrology. Measuring what it is actually doing: its correlation with
+distance from the coast is $0.73$ and with elevation $0.33$, so within this
+window it functions substantially as a smooth coast-to-inland gradient, that is,
+a proxy for the orographic ramp, not a local rainfall signal.
+
+It is not, however, empty. Leave-one-out retraining shows removing it costs
+$0.0063$ AUC, the second largest of any single factor after elevation
+($0.0173$), so it carries information the terrain variables do not. Our reading
+is that at district scale the CHIRPS gradient encodes a real orographic
+precipitation contrast that matters for susceptibility, while at city scale it
+degenerates into a positional covariate. We retain it, because the model is
+trained district-wide, and flag it here so the SHAP ranking is not
+over-interpreted as evidence of fine-scale rainfall control. This is a weaker
+version of the NDVI problem: a variable earning attribution partly for a reason
+other than the one its name implies.
+
+\begin{table*}[!t]
+\centering\footnotesize
+\caption{Feature-set ablation on the held-out test split ($n=900$). ``12F''
+includes SPI, NDVI and land cover; ``11F'' drops SPI on VIF grounds; ``9F'' is
+the primary terrain-and-rainfall model. All models are XGBoost with identical
+hyperparameters and split.}
+\label{tab:ablation}
+\small
+\begin{tabular}{@{}lrrrrrrl@{}}
+\toprule
+\textbf{Set} & \textbf{Acc.} & \textbf{Prec.} & \textbf{Rec.} & \textbf{$F_1$} &
+\textbf{ROC-AUC} & \textbf{CV AUC} & \textbf{SHAP top-3} \\
+\midrule
+12F & 0.9456 & 0.9368 & 0.9556 & 0.9461 & 0.9878 & $0.9839\pm0.0092$ & lulc, ndvi, elevation \\
+11F & 0.9478 & 0.9390 & 0.9578 & 0.9483 & 0.9872 & $0.9833\pm0.0098$ & lulc, ndvi, elevation \\
+\textbf{9F} & 0.9111 & 0.9167 & 0.9044 & 0.9105 & 0.9625 & $0.9585\pm0.0154$ & elevation, hand, dist\_river \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Model selection between random forest and XGBoost on the primary set is close:
+random forest reaches accuracy 0.9033 and test ROC-AUC 0.9618
+($0.9554\pm0.0110$ under 5-fold cross-validation), XGBoost 0.9111 and 0.9625
+($0.9534\pm0.0086$). XGBoost is selected on test ROC-AUC and used throughout. Its SHAP attribution
+(Fig.~\ref{fig:shap}) ranks elevation and HAND first, followed by channel
+proximity, rainfall climatology and wetness, an ordering consistent with the
+hydrological reading of the terms and free of the land-cover dominance that
+characterized the discarded 12-factor model.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/shap_importance.pdf}
+\caption{SHAP attribution for the primary model: elevation and HAND dominate,
+followed by channel proximity, rainfall climatology and wetness.}
+\label{fig:shap}
+\end{figure}
+
+\subsection{Probability calibration, and what the score does \emph{not} mean}
+\label{sec:res-calibration}
+Isotonic calibration improved the Brier score from 0.0697 to 0.0683 and, being a
+monotone transform, left ranking performance unchanged (ROC-AUC 0.9648). The
+reliability diagram (Fig.~\ref{fig:calibration}) tracks the diagonal across the
+probability range.
+
+It would be easy, and wrong, to conclude from this that $\Sx$ can be read as a
+probability of flooding. The training sample is stratified \num{1500}/\num{1500},
+so its implied base rate is exactly $0.5$ by construction, and isotonic
+regression fitted on that split calibrates to a $0.5$ prior. The deployment
+prevalence, measured as the SAR-observed flooded fraction of the coastal
+holdout, is $0.0095$ (Table~\ref{tab:transfer}). The calibrated score is therefore
+well-behaved with respect to a reference population in which half the landscape
+floods, which is not the landscape.
+
+The consequence is measurable and, importantly, it partly explains a result we
+initially attributed elsewhere. At a $0.5$ cut the balanced-prior model flags
+40.76\% of the coastal holdout as positive. Applying the standard prior
+correction~\citep{elkan2001,saerens2002}, for a model trained at prior
+$\pi_{\mathrm{tr}}$ and deployed at $\pi_{\mathrm{dep}}$,
+\begin{equation}
+p' \;=\; \frac{p\,\omega}{p\,\omega + (1-p)},
+\qquad
+\omega \;=\; \frac{\pi_{\mathrm{dep}}/(1-\pi_{\mathrm{dep}})}
+                  {\pi_{\mathrm{tr}}/(1-\pi_{\mathrm{tr}})} \;=\; 0.009591,
+\label{eq:priorshift}
+\end{equation}
+drops that to 5.7524\% (Table~\ref{tab:prior}). Because \eqref{eq:priorshift} is
+strictly increasing in $p$, ROC-AUC is invariant at 0.9648, which is the point:
+the ranking was never in question, only the interpretation of its absolute level.
+
+Section~\ref{sec:res-spatial} defends the high false-alarm ratio on the grounds
+that absence of SAR observation is not evidence of dryness. That argument stands,
+but it is not the whole explanation, and we correct it here: a substantial part
+of the 40.76\% positive fraction is simply the balanced-prior artifact. We
+therefore report $\Sx$ throughout as a \emph{relative exposure ranking}, which is
+what the routing layer consumes and what the success-rate curve evaluates, and we
+do not recommend thresholding it at 0.5 as though it were a posterior. An
+operational deployment wanting absolute probabilities should apply
+\eqref{eq:priorshift} with a locally estimated prevalence, bearing in mind that
+the SAR-derived $\pi_{\mathrm{dep}}$ used here is itself a lower bound.
+
+\begin{table*}[!t]
+\centering\footnotesize
+\caption{Effect of the training prior. The classifier is trained on a balanced
+sample; the landscape is not balanced. The prior-corrected posterior changes what
+a score means, not how scores rank.}
+\label{tab:prior}
+\small
+\begin{tabular}{@{}lrr@{}}
+\toprule
+\textbf{Quantity} & \textbf{Balanced prior} & \textbf{Prevalence-corrected} \\
+\midrule
+Implied base rate & 0.500 & 0.0095 \\
+Brier score (balanced test split) & 0.0683 & --- \\
+ROC-AUC & 0.9648 & 0.9648 (invariant) \\
+Coastal holdout above a 0.5 cut & 40.76\% & 5.7524\% \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/calibration.pdf}
+\caption{Reliability diagram after isotonic calibration. Predicted probabilities
+track observed frequencies across the range.}
+\label{fig:calibration}
+\end{figure}
+
+\subsection{Spatial validation: how much skill is real}
+\label{sec:res-spatial}
+
+Table~\ref{tab:spatial} and Fig.~\ref{fig:spatial} report the validation
+ladder, and the pattern across it is the most methodologically interesting result
+in this paper.
+
+Under spatial-block cross-validation the primary model falls from 0.9585 to
+0.9474, a drop of 1.16\%. The reduction is modest, indicating that the model
+does not substantially exploit spatial autocorrelation: withholding geography
+costs it approximately one point of AUC. Notably the twelve-factor model drops far \emph{less}
+(0.30\%), which is not evidence that it generalizes better. Land cover is so
+strongly predictive of the SAR label that it swamps the spatial structure, so the
+block-CV control has little left to remove. A spatial-CV score taken in isolation
+would therefore have ranked the confounded model as the more robust one, which is
+a caution worth recording: spatial validation controls for leakage through
+geography, not for leakage through a sensor artifact.
+
+Under the strictest test, coastal geographic transfer, AUC falls to 0.8594
+(Table~\ref{tab:transfer}). POD is 0.9507, and the success-rate curve
+(Fig.~\ref{fig:sar_val}b) shows the top 10\% of the landscape by susceptibility
+contains 49.26\% of all SAR-observed flooding and the top 20\% contains 75.37\%,
+lifts of $4.93\times$ and $3.77\times$ over a random ranking. This is the
+operationally defensible discrimination result. Fig.~\ref{fig:susceptibility}
+shows the surfaces side by side; drainage-following structure persists in the
+withheld coastal footprint.
+
+The false-alarm ratio of 0.9778 requires care, not concealment. Observed
+flood pixels are 0.95\% of the footprint, so at a 0.5 threshold the majority of
+predicted-positive pixels are necessarily unobserved-flooded. More importantly,
+under a twelve-day revisit a pixel outside the polygons means ``not seen
+flooded'', never ``dry''. The FAR is therefore an upper bound on the true false
+alarm rate and should not be read as a 97\% error rate; the AUC and the
+success-rate curve, both of which use the full ranking rather than a threshold,
+are the interpretable summaries.
+
+\begin{table*}[!t]
+\centering\footnotesize
+\caption{Random versus spatial-block 5-fold cross-validation. Blocks are
+$0.05^\circ$ squares; whole blocks are held out.}
+\label{tab:spatial}
+\small
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+\textbf{Feature set} & \textbf{Random 5-fold AUC} & \textbf{Spatial-block AUC} &
+\textbf{Drop} & \textbf{Drop (\%)} \\
+\midrule
+12F & $0.9839\pm0.0092$ & $0.9810\pm0.0052$ & 0.0030 & 0.30 \\
+11F & $0.9833\pm0.0098$ & $0.9805\pm0.0059$ & 0.0028 & 0.29 \\
+\textbf{9F} & $0.9585\pm0.0154$ & $0.9474\pm0.0039$ & 0.0111 & 1.16 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[!t]
+\centering
+\caption{Coastal geographic-transfer validation. The model is trained on the
+\num{2589} labeled points outside the SAR footprint plus a $0.01^\circ$ buffer
+and scored against SAR polygons inside it; \num{411} inside points are withheld
+entirely. Contingency metrics use a 0.5 threshold.}
+\label{tab:transfer}
+\small
+\begin{tabular}{@{}lr@{\qquad}lr@{}}
+\toprule
+\textbf{Quantity} & \textbf{Value} & \textbf{Quantity} & \textbf{Value} \\
+\midrule
+Training points (outside) & \num{2589} & ROC-AUC & 0.8594 \\
+Points withheld (inside) & \num{411} & Hit rate (POD) & 0.9507 \\
+Valid prediction pixels & \num{21365} & False-alarm ratio$^{\dagger}$ & 0.9778 \\
+Observed-flood pixels & \num{203} (0.95\%) & Critical success index$^{\dagger}$ & 0.0221 \\
+TP / FN & \num{193} / \num{10} & Flooding in top 10\% area & 49.26\% \\
+TN / FP & \num{12647} / \num{8515} & Flooding in top 20\% area & 75.37\% \\
+\bottomrule
+\multicolumn{4}{@{}p{13.5cm}@{}}{\footnotesize $^{\dagger}$Upper and lower bounds
+respectively: SAR observes flooding only on its twelve-day revisit, so a pixel
+outside the polygons is ``not observed flooded'', not ``dry''.}
+\end{tabular}
+\end{table*}
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=\linewidth]{figures/spatial_validation.pdf}
+\caption{(a) Feature-set ablation. (b) Random versus spatial-block
+cross-validation; the confounded 12F model drops least, because land cover
+dominates the spatial signal. (c) SHAP top-6 for the 9-factor and 12-factor
+models side by side, showing land cover and NDVI displacing terrain in the
+confounded model.}
+\label{fig:spatial}
+\end{figure*}
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=\linewidth]{figures/sar_validation.pdf}
+\caption{Coastal geographic holdout. (a) ROC against SAR-observed flooding for a model
+trained entirely outside the evaluation footprint and its buffer. (b) Success-rate curve: the
+highest-susceptibility 10\% of the landscape contains 49.26\% of observed
+flooding.}
+\label{fig:sar_val}
+\end{figure*}
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=\linewidth]{figures/susceptibility_surface.pdf}
+\caption{(a) The calibrated susceptibility surface $\Sx$ over the coastal
+footprint with SAR-observed flooding outlined. (b) The geographic-transfer
+prediction from a model trained outside this footprint and its buffer. The two surfaces are
+visually similar, which is the qualitative counterpart of the transfer AUC of
+0.8594.}
+\label{fig:susceptibility}
+\end{figure*}
+
+\subsection{Trigger validation and its discriminative limit}
+\label{sec:res-trigger}
+
+Table~\ref{tab:trigger} publishes the complete input record behind every trigger
+value, which we consider necessary: a trigger whose inputs are not shown cannot
+be checked. Equation~\eqref{eq:trigger} is verified monotone under uniform
+rainfall scaling ($T = 0.000, 0.063, 0.125, 0.251, 0.502, 0.924, 1.000$ for
+scale factors $0$ to $8$).
+
+The ordering test passes. Both documented floods score above an ordinary wet day
+($T=0.133$) and a dry baseline ($T=0.000$), with no parameter fitted to them.
+Notably the two events arrive at high $T$ by different routes: May 2025 through
+daily intensity (\SI{87.2}{\milli\metre}/\SI{24}{\hour}, IMD Heavy) and
+August 2024 through saturation (\SI{216.9}{\milli\metre}/\SI{72}{\hour}) despite
+a merely Moderate 24-hour total. A single-threshold rainfall alarm keyed to
+24-hour totals would have ranked August 2024 below an ordinary heavy day; the
+three-term structure is what recovers it.
+
+The adversarial case is where the result is weaker, and we report it as measured.
+A deliberately chosen heavy-rain day with no reported flooding
+(15 July 2025; \SI{66.8}{\milli\metre}/\SI{24}{\hour}, IMD Heavy) scores
+$T=0.551$, only $0.011$ below the August 2024 flood. The trigger separates flood
+from non-flood conditions strongly but separates flood from
+\emph{heavy-rain-without-flood} barely at all. Fig.~\ref{fig:trigger}b shows
+why, and also suggests the remedy: the discriminating variable is the 72-hour
+saturation total (\num{216.9} and \SI{205.6}{\milli\metre} for the two floods
+versus \SI{116.8}{\milli\metre} for the non-flood day), while the burst term
+actively works against separation, being highest of all on the non-flood day
+(\SI{28.0}{\milli\metre}/\SI{6}{\hour}). Re-weighting toward saturation would
+widen the margin, but doing so using these events would convert a validated
+trigger into a fitted one, so we report the limitation rather than tune it away.
+
+\begin{table*}[!t]
+\centering\footnotesize
+\caption{Complete trigger inputs, from the ERA5 archive via Open-Meteo at
+Mangaluru ($12.87^\circ$N, $74.84^\circ$E). Weighted terms are the three components of~\eqref{eq:trigger}. No parameter is fitted to these
+events.}
+\label{tab:trigger}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}llrrrlrrrr@{}}
+\toprule
+\multirow{2}{*}{\textbf{Scenario}} & \multirow{2}{*}{\textbf{Class}} &
+\multicolumn{3}{c}{\textbf{Rainfall (\si{\milli\metre})}} &
+\multirow{2}{*}{\textbf{IMD (24\,h)}} &
+\multicolumn{3}{c}{\textbf{Weighted terms}} & \multirow{2}{*}{$\boldsymbol{T}$} \\
+\cmidrule(lr){3-5}\cmidrule(lr){7-9}
+ & & \textbf{6\,h} & \textbf{24\,h} & \textbf{72\,h} & &
+ \textbf{daily} & \textbf{sat.} & \textbf{burst} & \\
+\midrule
+May 2025 Mangaluru urban & flood & 7.6 & 87.2 & 205.6 & Heavy & 0.377 & 0.300 & 0.024 & \textbf{0.701} \\
+Aug 2024 Nethravathi river & flood & 10.1 & 53.4 & 216.9 & Moderate & 0.231 & 0.300 & 0.031 & \textbf{0.562} \\
+15 Jul 2025 heavy rain & no flood & 28.0 & 66.8 & 116.8 & Heavy & 0.289 & 0.175 & 0.087 & 0.551 \\
+6 Sep 2025 ordinary wet & wet & 3.2 & 11.0 & 50.0 & Light & 0.048 & 0.075 & 0.010 & 0.133 \\
+16 Feb 2025 dry baseline & dry & 0.0 & 0.0 & 0.0 & No rain & 0.000 & 0.000 & 0.000 & 0.000 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=\linewidth]{figures/trigger_anatomy.pdf}
+\caption{(a) Decomposition of $\Tt$ into its three weighted terms. (b) The
+measured rainfall inputs. The two documented floods exceed
+\SI{200}{\milli\metre} of 72-hour antecedent rainfall; the heavy-rain non-flood
+day reaches only \SI{116.8}{\milli\metre} despite the largest 6-hour burst in the
+set, identifying catchment saturation as the discriminating variable.
+(c) Mean adversarial margin across the weight simplex as a function of the
+saturation weight, at $\theta_{\mathrm{sat}}=\SI{200}{\milli\metre}$. The
+operating point sits almost exactly at the zero crossing.}
+\label{fig:trigger}
+\end{figure*}
+
+\subsubsection*{Sensitivity of the trigger's own constants}
+\label{sec:res-trigger-sweep}
+Equation~\eqref{eq:trigger} contains four author-chosen constants: the three
+weights and $\theta_{\mathrm{sat}}$. Only $\theta_{\mathrm{H}}$ and
+$\theta_{\mathrm{VH}}$ are externally published. Having swept the routing
+constants, it would be inconsistent not to sweep these, particularly since they
+govern the paper's weakest result. Table~\ref{tab:triggersweep} reports 231
+weight triples on the simplex at 0.05 resolution crossed with five values of
+$\theta_{\mathrm{sat}}$, evaluated on the same five scenarios.
+
+Two findings follow. First, the \emph{easy} discrimination is invariant to the
+weighting: floods rank above the ordinary wet day and the dry baseline in all
+\num{1155} settings, so that result is a property of the input data rather than
+of the weights.
+Second, the \emph{hard} discrimination is governed almost entirely by one weight.
+The adversarial margin rises monotonically from $-0.200$ at zero saturation
+weight to $+0.416$ at unit saturation weight
+(Fig.~\ref{fig:trigger}c), and is positive in only 374 of \num{1155} settings.
+The operating point, at saturation weight 0.3, sits essentially on the zero
+crossing, which is why its margin is a marginal $+0.011$.
+
+This converts the qualitative diagnosis of the previous subsection into a
+measurement: the 72-hour antecedent term carries the flood-versus-heavy-rain
+signal, and the operating weights under-use it. We deliberately do \emph{not}
+adopt the optimum. Choosing weights to maximize separation on the same five
+events the trigger is validated against would convert a validated component into
+a fitted one and forfeit the property this paper claims for it. Re-weighting
+requires an independent event set, which we identify as future work.
+
+\subsubsection*{Why tidal stage is the physically indicated fourth term}
+Re-weighting the existing three terms is unlikely to be the right resolution,
+because all three are rainfall statistics and the quantity they omit is not
+rainfall. In a tidally influenced estuary the water level at a given discharge is
+set jointly by the discharge and by the seaward boundary condition. A high tide
+raises that boundary, flattens the hydraulic gradient at the mouth, and reduces
+the discharge the channel can convey, so an identical rainfall sequence produces a
+higher inland stage when its runoff peak coincides with high water. This is the
+standard fluvial-tidal compound mechanism, and it is the mechanism the present
+formulation cannot represent: $\Tt$ in \eqref{eq:trigger} is a function of
+$P_6, P_{24}, P_{72}$ alone, so any two days with matching rainfall receive
+identical $T$ regardless of tidal phase.
+
+Two properties of the required extension follow from that mechanism. First, the
+tidal term should enter multiplicatively rather than additively. An additive
+fourth term would let a high tide alone raise $T$ on a dry day, which is
+physically wrong; the effect is conditional on there being discharge to impound.
+A form such as
+\begin{equation}
+T'(t) \;=\; \Tt \cdot \bigl(1 + \lambda\,\eta^{+}(t)\bigr),
+\qquad \eta^{+}(t)=\max\!\left(0,\frac{\eta(t)-\eta_{0}}{\eta_{\max}-\eta_{0}}\right),
+\label{eq:tide}
+\end{equation}
+with $\eta(t)$ the observed stage, $\eta_0$ a threshold above which backwater
+becomes material, and $\lambda$ a single coupling constant, has the property that
+it vanishes when either rainfall or tidal anomaly is absent and grows only when
+both are present. Second, $\eta$ should be measured rather than predicted.
+Harmonic tide predictions of the kind the live system currently retrieves give the
+astronomical component only; the meteorological residual, the storm surge and
+wind setup that accompany the same weather systems that produce the rainfall, is
+exactly the part correlated with flood events, and it is present only in gauge
+observations.
+
+We state this as a hypothesis with a defined test, not as a result. The test is
+whether $\eta^{+}$ evaluated at the runoff peak separates the two documented
+floods from the 15 July heavy-rain day at a margin materially larger than the
+$+0.011$ obtained from rainfall alone. We have not run it, because it requires
+gauge records for the Gurupura and Nethravathi mouths that we could not obtain for
+the study period, and $\lambda$ and $\eta_0$ would themselves need calibration on
+events independent of the five used here. Reporting the mechanism and the test
+without the result is the honest position: the $+0.011$ margin is a real limit on
+the current trigger, and we can name the variable most likely to explain it
+without claiming to have shown that it does.
+
+\begin{table*}[!t]
+\centering\footnotesize
+\caption{Sensitivity of the trigger to its four unpublished constants, over 231
+weight triples $\times$ 5 values of $\theta_{\mathrm{sat}}$. ``Adversarial
+margin'' is $\min_{\text{floods}} T$ minus $T$ for the heavy-rain non-flood day;
+``ordinary margin'' is against the ordinary wet day. The optimum is reported for
+information and is not adopted.}
+\label{tab:triggersweep}
+\small
+\begin{tabular}{@{}llrr@{}}
+\toprule
+\textbf{Setting} & \textbf{Weights (daily/sat./burst), $\theta_{\mathrm{sat}}$} &
+\textbf{Adversarial} & \textbf{Ordinary} \\
+\midrule
+\textbf{Operating point (adopted)} & 0.50 / 0.30 / 0.20, \SI{200}{\milli\metre} & $+0.011$ & $+0.430$ \\
+Best over the sweep (not adopted) & 0.00 / 1.00 / 0.00, \SI{200}{\milli\metre} & $+0.416$ & $+0.610$ \\
+Worst over the sweep & 0.00 / 0.00 / 1.00, \SI{100}{\milli\metre} & $-0.316$ & $+0.062$ \\
+\midrule
+\multicolumn{2}{@{}l}{Settings with correct flood $>$ ordinary $>$ dry ordering} & \multicolumn{2}{r}{\num{1155} / \num{1155}} \\
+\multicolumn{2}{@{}l}{Settings with a positive adversarial margin} & \multicolumn{2}{r}{374 / \num{1155}} \\
+\multicolumn{2}{@{}l}{Settings with an adversarial margin above 0.05} & \multicolumn{2}{r}{277 / \num{1155}} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{Flood-aware routing}
+\label{sec:res-routing}
+
+At the standardized May 2025 setting ($T=0.70$, $\kappa=8$, $\tau=0.60$),
+\num{4019} directed edges are blocked. Static susceptibility exceeds 0.5 on
+\num{9886} of \num{59501} edges (16.61\%; Fig.~\ref{fig:roadgraph}). For the
+representative Wenlock Hospital--Kulur pair, the flood-aware route increases
+travel time from \SI{9.5}{\minute} to \SI{16.7}{\minute} while reducing mean
+exposure from 0.193 to 0.073 (62.2\%) and maximum exposure from 0.690 to 0.545
+(Fig.~\ref{fig:route_overlay}). Both routes still depend on a small set of river
+crossings, showing that software cannot substitute for physical redundancy.
+
+The district design contains 247 hospital--scenario pairs. Of these, 192 remain
+reachable under the flood-aware policy and 55 are severed. On the 192 survivors,
+mean exposure falls from 0.1712 (risk-blind) to 0.0655 (risk-aware), a 61.7\%
+reduction, with a mean detour of \SI{63.075}{\minute}. This conditional average
+must be read together with the severed count; averaging only the routes that
+remain feasible otherwise hides the largest operational consequence.
+
+\paragraph{Robustness to scenario selection}
+The 13 named scenario points are author-selected. Repeating the analysis for 200
+road nodes sampled uniformly at random yields 2,865 routed and 935 severed pairs
+out of 3,800. Among routed pairs, mean exposure falls from 0.1828 to 0.0696
+(61.9\%) with a mean \SI{71.177}{\minute} detour. The exposure reduction is
+therefore similar under randomized destinations, while the large severed count
+confirms that district-scale connectivity, rather than favorable site choice,
+dominates the operational result.
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=\linewidth]{figures/road_graph_risk.pdf}
+\caption{(a) The routing graph colored by per-edge susceptibility. (b) The
+\num{9886} flood-prone edges ($S>0.5$), 16.61\% of the network. Statistics are
+computed on the full district graph of \num{59501} directed edges.}
+\label{fig:roadgraph}
+\end{figure*}
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.62\linewidth]{figures/route_overlay.pdf}
+\caption{Risk-blind (orange) versus flood-aware (green) route from Wenlock
+District Hospital to Kulur at $T=0.70$, over the susceptibility-colored network.
+The flood-aware route takes an inland detour, trading \SI{7.2}{\minute} for a
+62.2\% reduction in mean exposure.}
+\label{fig:route_overlay}
+\end{figure*}
+
+\subsection{Sensitivity of the routing constants}
+\label{sec:res-sensitivity}
+
+Fig.~\ref{fig:sensitivity} and Table~\ref{tab:sensitivity} report the full
+$7\times7$ sweep of $(\kappa,\tau)$, recomputing all 247 hospital--scenario pairs
+in each cell.
+
+\paragraph{Correcting for survivorship} At $\tau\le0.50$, 87 of the 247 pairs
+are severed, so averaging ``whatever routed'' would discard the hard cases. All
+comparative statistics below and in Fig.~\ref{fig:sensitivity}(a)--(b) are
+therefore computed over the 160 pairs routable in every cell; panel (c) reports
+severed counts over all 247. The risk-blind baseline on that common subset is
+mean exposure 0.1619 with mean travel time \SI{55.194}{\minute}.
+
+\paragraph{The penalty weight remains material}
+At $\tau=0.60$ over the common subset, increasing $\kappa$ from 2 to 16 lowers
+mean exposure from 0.0646 to 0.0552 while increasing mean detour from
+\SI{56.902}{\minute} to \SI{73.471}{\minute}. The eight-cell neighborhood around
+the operating point has a 22.76\% exposure spread. Thus the earlier claim that
+$\kappa$ becomes immaterial is not supported at district scale; $\kappa=8$ is a
+documented operating choice within a continuing safety--delay trade-off.
+
+\paragraph{The impassability threshold is a different kind of parameter}
+Holding $\kappa=8$, severed pairs are 87 at $\tau\le0.50$, 55 at
+$\tau\in\{0.55,0.60\}$, 31 at $\tau=0.65$, and 0 at $\tau\ge0.70$. Passability
+turns on a small number of critical edges whose risk values cluster tightly.
+Both parameters matter: $\kappa$ controls a continuous exposure--detour trade-off,
+while $\tau$ creates discrete changes in district connectivity. The threshold
+should be calibrated against observed road closures and set by policy on
+acceptable risk rather than inherited as convention.
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=\linewidth]{figures/sensitivity_sweep.pdf}
+\caption{Sensitivity of the routing outcome to the penalty weight $\kappa$ and
+impassability threshold $\tau$ at $T=0.70$. (a) Mean route exposure and
+(b) mean detour, both over the 160 pairs routable in \emph{every} cell of the
+sweep so that cells are compared like with like; (c) severed pairs, over all 247.
+Vertical banding shows the connectivity discontinuities controlled by $\tau$;
+the red box marks the operating point.}
+\label{fig:sensitivity}
+\end{figure*}
+
+\begin{table*}[!t]
+\centering\footnotesize
+\caption{Sensitivity sweep, selected sections. Exposure and detour are computed
+over the 160 pairs routable in \emph{every} cell of the sweep, so columns are
+comparable; the severed count is over all 247. Risk-blind baseline on that common
+subset: mean exposure 0.1619 and mean travel time \SI{55.194}{\minute}.}
+\label{tab:sensitivity}
+\small
+\begin{tabular}{@{}rrr@{\qquad\qquad}rrrr@{}}
+\toprule
+\multicolumn{3}{c}{\textbf{$\tau = 0.60$ fixed}} &
+\multicolumn{4}{c}{\textbf{$\kappa = 8$ fixed}} \\
+\cmidrule(lr){1-3}\cmidrule(lr){4-7}
+$\boldsymbol{\kappa}$ & \textbf{Exposure} & \textbf{Detour (min)} &
+$\boldsymbol{\tau}$ & \textbf{Exposure} & \textbf{Detour (min)} & \textbf{Severed} \\
+\midrule
+2  & 0.0646 & 56.902 & 0.45 & 0.0532 & 69.050 & 87 \\
+4  & 0.0646 & 57.190 & 0.50 & 0.0550 & 68.384 & 87 \\
+6  & 0.0636 & 58.838 & 0.55 & 0.0563 & 67.362 & 55 \\
+\textbf{8}  & \textbf{0.0624} & \textbf{60.944} & \textbf{0.60} & \textbf{0.0624} & \textbf{60.944} & \textbf{55} \\
+10 & 0.0588 & 63.685 & 0.65 & 0.0757 & 24.969 & 31 \\
+12 & 0.0568 & 70.314 & 0.70 & 0.0923 & 13.434 & 0 \\
+16 & 0.0552 & 73.471 & 0.75 & 0.0923 & 13.434 & 0 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{Dijkstra versus A* : a multi-query benchmark}
+\label{sec:res-algo}
+
+Table~\ref{tab:algo} and Fig.~\ref{fig:routing_benchmark} report all 192 pairs
+reachable under the standardized May 2025 setting. The two searches recover the
+same path and cost for every pair. A$^\ast$ settles fewer nodes on all 192: mean
+exploration falls from \num{10830} to \num{9344.1}, a 13.7\% mean reduction,
+with a median per-pair reduction of 10.03\% and a range of 0.33--80.81\%.
+
+The node saving does not translate into faster execution in this transparent
+Python implementation. Mean wall time rises from \SI{29.715}{\milli\second} for
+Dijkstra to \SI{36.033}{\milli\second} for A$^\ast$, so A$^\ast$ is 21.3\%
+slower on average and faster on only 53 of 192 pairs. Haversine-heuristic
+evaluation costs more than the saved expansions on many queries. These timings
+are implementation-bound, but they are the measurements produced by the tested
+reference code.
+
+\begin{table*}[!t]
+\centering\footnotesize
+\caption{Dijkstra versus A$^\ast$ across 192 reachable hospital--scenario pairs at
+$T=0.70$.}
+\label{tab:algo}
+\small
+\begin{tabular}{@{}lrr@{}}
+\toprule
+\textbf{Metric} & \textbf{Dijkstra} & \textbf{A}$^\ast$ \\
+\midrule
+Mean nodes explored & \num{10830} & \num{9344.1} \\
+Median per-pair node reduction & \multicolumn{2}{c}{10.03\%} \\
+Range of per-pair reduction & \multicolumn{2}{c}{0.33\% -- 80.81\%} \\
+Pairs where A$^\ast$ explores fewer & \multicolumn{2}{c}{192 / 192} \\
+Mean wall time & \SI{29.715}{\milli\second} & \SI{36.033}{\milli\second} \\
+Pairs where A$^\ast$ is faster & \multicolumn{2}{c}{53 / 192} \\
+Identical optimal path and cost & \multicolumn{2}{c}{192 / 192} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.8\linewidth]{figures/routing_benchmark.pdf}
+\caption{(a) Per-pair search cost; points below the diagonal indicate A$^\ast$
+explored fewer nodes. (b) Distribution of per-pair node-exploration reduction,
+median 10.03\%.}
+\label{fig:routing_benchmark}
+\end{figure*}
+
+\subsection{Quantum dispatch: a feasibility check}
+\label{sec:res-qaoa}
+
+The QUBO ground state matches the Hungarian optimum exactly in both scenarios:
+\SI{124.7229}{\minute} for dry conditions and \SI{250.8706}{\minute} under the
+May 2025 trigger. Table~\ref{tab:qaoa} reports the depth study over five seeds.
+
+Mean approximation ratio is non-monotone with depth in both scenarios. The dry
+case peaks at $p=3$ ($0.9107\pm0.0096$) and then falls, while the flood case is
+highest at $p=1$ ($0.9004\pm0.0199$) and varies thereafter. Optimum-sampling
+probability is also non-monotone, ranging from 0.0274 to 0.0978 for dry and
+0.0615 to 0.1461 for flood. COBYLA is a local optimizer on a non-convex
+landscape and the INTERP warm start does not guarantee improvement, so circuit
+depth cannot be presented as a monotone benefit here.
+
+The optimal assignment is identical under dry and flood conditions:
+Wenlock--Mulki, Puttur--Belthangady and Sullia--Subrahmanya. We had expected
+re-allocation and did not observe it: at this fleet size and geometry,
+flooding changes travel times enough to alter route \emph{shape}
+(Section~\ref{sec:res-routing}) but not enough to alter the assignment's relative
+ordering. The finding is reported as observed.
+
+We state plainly that at $n=3$ the Hungarian algorithm is exact and effectively
+instantaneous, while the QAOA simulation takes seconds and returns the optimum
+only probabilistically. This layer is a feasibility demonstration of the
+QUBO/QAOA formulation on a real risk-aware cost matrix, not a claim of quantum
+advantage. Its value is that the encoding, the constraint penalties and the
+verification path are in place should problem sizes and hardware make the
+question live.
+
+\begin{table*}[!t]
+\centering\footnotesize
+\caption{QAOA depth study, 9 qubits, exact statevector, mean $\pm$ s.d.\ over
+5 seeds with INTERP warm starting. ``Lift'' is mean optimum-sampling probability
+relative to the uniform baseline $1/2^9$.}
+\label{tab:qaoa}
+\small
+\begin{tabular}{@{}rlrrrrr@{}}
+\toprule
+$\boldsymbol{p}$ & \textbf{Scenario} & \textbf{Params} &
+\textbf{Approx.\ ratio} & \textbf{Best} & \textbf{P(optimum)} & \textbf{Lift} \\
+\midrule
+1 & Dry & 2 & $0.8759\pm0.0078$ & 0.8899 & $0.0279\pm0.0414$ & $14.3\times$ \\
+2 & Dry & 4 & $0.8896\pm0.0114$ & 0.9007 & $0.0353\pm0.0300$ & $18.1\times$ \\
+3 & Dry & 6 & $0.9107\pm0.0096$ & 0.9192 & $0.0978\pm0.0845$ & $50.1\times$ \\
+4 & Dry & 8 & $0.8953\pm0.0078$ & 0.9062 & $0.0701\pm0.0857$ & $35.9\times$ \\
+5 & Dry & 10 & $0.8953\pm0.0077$ & 0.9097 & $0.0274\pm0.0414$ & $14.0\times$ \\
+\midrule
+1 & Flood & 2 & $0.9004\pm0.0199$ & 0.9211 & $0.0615\pm0.0765$ & $31.5\times$ \\
+2 & Flood & 4 & $0.8954\pm0.0122$ & 0.9114 & $0.0719\pm0.0705$ & $36.8\times$ \\
+3 & Flood & 6 & $0.8882\pm0.0083$ & 0.8968 & $0.0699\pm0.0617$ & $35.8\times$ \\
+4 & Flood & 8 & $0.8998\pm0.0119$ & 0.9197 & $0.1461\pm0.1051$ & $74.8\times$ \\
+5 & Flood & 10 & $0.8957\pm0.0109$ & 0.9104 & $0.0795\pm0.0794$ & $40.7\times$ \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{Comparison with prior work}
+Table~\ref{tab:comparison} positions the reported performance against
+representative susceptibility studies. Direct comparison of headline AUCs across
+study regions is weak evidence, since inventory density, class balance and
+sampling design differ, but the table makes the intended point: our
+random-split figure sits inside the published range, and the figures that follow
+from stricter validation, which most of these studies do not report, sit below
+it. We would encourage the comparison to be read column-wise on protocol rather
+than row-wise on score.
+
+\begin{table*}[!t]
+\centering
+\caption{Reported flood-susceptibility performance in representative prior work
+and this study. ``Protocol'' indicates the strictest validation reported.}
+\label{tab:comparison}
+\small
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Study} & \textbf{Method} & \textbf{Reported AUC} & \textbf{Protocol} \\
+\midrule
+\citet{tehrany2014} & SVM + frequency ratio & 0.88 & Random split \\
+\citet{khosravi2018} & Decision-tree family & 0.85--0.92 & Random split \\
+\citet{arabameri2019} & Random forest & 0.93 & Random split \\
+\citet{saha2021} & Hyperpipes + SVR ensemble & 0.94 & Random split \\
+\citet{aydin2022} & Boosting ensembles + SHAP & $>0.95$ & Random split \\
+\citet{sadhwani2026} & Dual ML, SAR + elevation & --- & Random split \\
+\midrule
+This study (9F, primary) & XGBoost + SHAP & 0.9625 & Random split \\
+This study (9F) & XGBoost + SHAP & 0.9474 & Spatial-block CV \\
+\textbf{This study (9F)} & XGBoost + SHAP & \textbf{0.8594} & \textbf{Coastal holdout} \\
+\bottomrule
+\multicolumn{4}{@{}p{13.5cm}@{}}{\footnotesize Values are as reported by each
+study on its own region and inventory and are not directly comparable; the column
+that carries the argument is \textbf{Protocol}. Our discarded 12-factor model
+scores 0.9878 on a random split, which would top this table, and is excluded
+because Section~\ref{sec:res-ablation} shows that score is a sensor artifact.}
+\end{tabular}
+\end{table*}
+
+\subsection{Limitations}
+\label{sec:limitations}
+\begin{enumerate}
+\itemsep2pt
+\item \textbf{Susceptibility is not depth.} $\Sx$ and $\Rxt$ are relative
+      exposure indices in $[0,1]$, calibrated to a balanced prior rather than to
+      landscape prevalence (Section~\ref{sec:res-calibration}), so $\tau$ is a
+      heuristic on that index and not a statement about whether a vehicle can
+      ford a segment. A depth regression in the manner of \citet{sadhwani2026},
+      who obtain depth from SAR and elevation over this same coastal belt, is the
+      clearest route to a defensible passability criterion.
+\item \textbf{Tide is not in the trigger.} Equation~\eqref{eq:trigger} is
+      rainfall-only. This is the most conspicuous omission in the paper, because
+      the Nethravathi and Gurupura discharge into a shared estuary where tidal
+      stage can impound river flow, so a high tide coinciding with peak discharge
+      is precisely the compound condition the framework should capture. Tide
+      height is acquired for the live system but does not enter any reported
+      $T$ value. Adding a fourth term keyed to tidal stage at the flood peak is
+      the single highest-value extension to this work.
+\item \textbf{The trigger is spatially uniform.} The live system samples five
+      sites and conservatively aggregates their maximum trigger, but then applies
+      that scalar uniformly, so scenarios differ in intensity but never in spatial pattern.
+      Equation~\eqref{eq:fusion} therefore assumes the relative spatial pattern
+      of risk is invariant to event type, which cannot hold for events that are
+      fluvially versus tidally driven.
+\item \textbf{Trigger discrimination is weak at the top of the range.} As
+      Section~\ref{sec:res-trigger} shows, the margin between a documented flood
+      and a heavy-rain non-flood day is 0.011. The trigger is usable for
+      distinguishing flood conditions from normal ones and should not currently
+      be used as a flood/no-flood alarm.
+\item \textbf{The inventory is a lower bound.} With a twelve-day revisit, absence
+      of SAR-observed flooding at a location is never evidence of safety. Every
+      contingency metric computed against it inherits this asymmetry.
+\item \textbf{Validation is single-district.} All results are from Dakshina
+      Kannada. The geographic-transfer test withholds a coastal footprint inside
+      the district; it does not cross a climatic or geomorphic regime.
+\item \textbf{Road risk is a raster midpoint approximation.} The operational
+      surface is \SI{120}{\metre} resolution and samples each edge at its
+      midpoint; it is neither a hydraulic depth simulation nor a guarantee of
+      conditions along the full segment.
+\item \textbf{Hospital origins are not a live capability roster.} The 19
+      curated OSM locations were audited on 2026-09-11 for routing provenance,
+      not for ambulance availability, emergency specialty, beds or referrals.
+\item \textbf{The quantum layer demonstrates feasibility only.} At $n=3$ the
+      classical optimum is exact and instant; no advantage is claimed, and the
+      simulation is noiseless, so it does not characterize noisy intermediate-scale quantum (NISQ) behavior.
+\item \textbf{Wall-clock routing results are implementation-bound.} The
+      pure-Python router was chosen for search transparency; its timing should
+      not be read as a statement about A$^\ast$ in production systems.
+\end{enumerate}
+
+%==============================================================================
+\section{Conclusion}
+\label{sec:conclusions}
+
+This paper set out to build a flood-risk and emergency-response framework for a
+coastal Indian district whose satellite record is thinner than the methods
+literature usually assumes, and to be explicit about what that record can and
+cannot support. Five findings follow.
+
+\begin{enumerate}
+\itemsep3pt
+\item \textbf{A large part of the apparent skill of flood-susceptibility models
+      in forested coastal catchments can be a sensor artifact.} Including land
+      cover and NDVI raised test ROC-AUC from 0.9625 to 0.9878, but SHAP
+      attribution showed the gain came from those two variables, and the
+      mechanism is that C-band SAR cannot see water under closed canopy in a
+      landscape whose non-flooded lowland is predominantly forest. The model was
+      learning detectability, not hazard. Removing the confound costs 0.025 AUC
+      and is, we argue, mandatory.
+\item \textbf{Spatial validation controls for geography, not for sensor
+      circularity, and can invert the ranking of models.} Under spatial-block CV
+      the primary model lost 1.16\% AUC while the confounded model lost only
+      0.30\%, because land cover swamps the spatial signal. Under strict
+      coastal geographic holdout, training entirely outside the evaluation
+      footprint and its buffer, the primary model achieves ROC-AUC 0.8594, with
+      the top 10\% of the landscape by susceptibility containing 49.26\% of
+      SAR-observed flooding and the top 20\% containing 75.37\%.
+\item \textbf{A trigger built only from published rainfall thresholds orders
+      documented events correctly, but discriminates poorly at the top of its
+      range.} With no parameter fitted to them, the May 2025 and August 2024
+      floods score $T=0.701$ and $0.562$ against $0.133$ for an ordinary wet day
+      and $0.000$ for a dry baseline; the two events reach high $T$ by different
+      mechanisms, intensity and saturation respectively, which a 24-hour
+      threshold alarm would miss. But a heavy-rain day with no reported flooding
+      scores $0.551$, a margin of only $0.011$, and the diagnostic points at the
+      72-hour saturation term as the variable carrying the real signal.
+\item \textbf{District-wide routing exposes a sharp safety--access trade-off.}
+      Of 247 pairs, 192 remain reachable and 55 are severed at the operating
+      point. On the survivors, mean exposure falls from 0.1712 to 0.0655 (61.7\%)
+      at a mean \SI{63.075}{\minute} detour. The full $7\times7$ sweep shows that
+      $\kappa$ remains material, while $\tau$ creates discrete connectivity
+      changes: 87, 55, 31 and 0 severed pairs across successive threshold regimes.
+\item \textbf{Search-transparent benchmarking exposes trade-offs that single
+      examples hide.} A$^\ast$ returned the identical optimal path to Dijkstra on
+      all 192 reachable pairs and explored 13.7\% fewer nodes on average, yet was
+      21.3\% slower and faster on only 53 queries. The district-spread $3\times3$
+      QUBO reproduces the Hungarian optimum, but QAOA performance is non-monotone
+      with depth and offers no demonstrated advantage.
+\end{enumerate}
+
+The broader argument is methodological. Each stricter protocol reduced the
+headline number, 0.9878 to 0.9625 to 0.9474 to 0.8594, and each removed a specific,
+nameable way the earlier figure was optimistic. For a practitioner assessing
+whether to trust such a map, that sequence is more informative than its first term
+alone.
+
+Future work follows directly from the limitations. A calibrated depth regression
+would replace the heuristic impassability threshold with a hydraulic criterion
+and make $\tau$ a physical quantity instead of a policy one. A spatially
+resolved rainfall field would make the trigger genuinely spatiotemporal and
+address the strongest assumption in~\eqref{eq:fusion}. Re-weighting the
+trigger toward catchment saturation should widen the flood versus heavy-rain
+margin, but requires an independent event set to remain a validation rather than
+a fit. Extending the geographic-transfer test across districts with different
+geomorphology would establish whether the model transfers regionally or only
+locally. Finally, executing the QAOA circuits on physical NISQ hardware would
+characterize the noise behavior that exact simulation cannot.
+
+%==============================================================================
+% Author Contributions / Funding / Data Availability / Conflicts of Interest
+% removed at the authors' request. Most journals require these as a condition of
+% submission and will ask for them at the editorial-check stage, so they will
+% likely need to be restored from version control before submitting.
+%==============================================================================
+%==============================================================================
+\bibliographystyle{unsrtnat}
+\footnotesize
+
+
+
+\balance
+{\fontsize{8}{9.5}\selectfont
+\begin{thebibliography}{99}
+\setlength{\itemsep}{0pt}
+
+\bibitem[Chandrashekar and Shetty(2018)]{chandrashekar2018}
+V. D. Chandrashekar and A. Shetty, ``Trends in extreme rainfall over ecologically sensitive Western Ghats and coastal regions of Karnataka: an observational assessment,'' \emph{Arabian Journal of Geosciences}, vol. 11, no. 12, Art. no. 327, Jun. 2018, doi: 10.1007/s12517-018-3700-6.
+
+\bibitem[Chandana and Chandan(2023)]{chandana2023}
+S. Chandana and M. C. Chandan, ``Hydrological Implications of LULC Changes in the Netravathi River Basin: Insights from SWAT Modeling and Machine Learning Techniques,'' in \emph{2023 IEEE India Geoscience and Remote Sensing Symposium (InGARSS)}, pp. 1--4, Dec. 2023, doi: 10.1109/InGARSS59135.2023.10490324.
+
+\bibitem[Babar and Ramesh(2015)]{babar2015}
+S. Babar and H. Ramesh, ``Streamflow Response to Land Use--Land Cover Change over the Nethravathi River Basin, India,'' \emph{Journal of Hydrologic Engineering}, vol. 20, no. 10, Art. no. 05015002, Oct. 2015, doi: 10.1061/(ASCE)HE.1943-5584.0001177.
+
+\bibitem[Naik et al.(2022)]{naik2022}
+N. Naik, K. Chandrasekaran, V. M. Sundaram, and P. Panneer, ``Dual attention guided deep encoder-decoder network for change analysis in land use/land cover for Dakshina Kannada District, Karnataka, India,'' \emph{Environmental Earth Sciences}, vol. 82, no. 1, Art. no. 33, Dec. 2022, doi: 10.1007/s12665-022-10713-1.
+
+\bibitem[Nirmala(2026)]{nirmala2026}
+R.~Nirmala. Flood susceptibility assessment of Nethravathi River basin, Karnataka, through GIS-AHP technique. In \emph{Sustainability Solutions}, pages 643--661. Springer, 2026, doi: 10.1007/978-3-032-11300-9\_27.
+
+\bibitem[Tehrany et al.(2014)]{tehrany2014}
+M. S. Tehrany, B. Pradhan, and M. N. Jebur, ``Flood susceptibility mapping using a novel ensemble weights-of-evidence and support vector machine models in GIS,'' \emph{Journal of Hydrology}, vol. 512, pp. 332--343, May 2014, doi: 10.1016/j.jhydrol.2014.03.008.
+
+\bibitem[Khosravi et al.(2018)]{khosravi2018}
+K. Khosravi et al., ``A comparative assessment of decision trees algorithms for flash flood susceptibility modeling at Haraz watershed, northern Iran,'' \emph{Science of The Total Environment}, vol. 627, pp. 744--755, Jun. 2018, doi: 10.1016/j.scitotenv.2018.01.266.
+
+\bibitem[Arabameri et al.(2019)]{arabameri2019}
+A. Arabameri, K. Rezaei, A. Cerdà, C. Conoscenti, and Z. Kalantari, ``A comparison of statistical methods and multi-criteria decision making to map flood hazard susceptibility in Northern Iran,'' \emph{Science of The Total Environment}, vol. 660, pp. 443--458, Apr. 2019, doi: 10.1016/j.scitotenv.2019.01.021.
+
+\bibitem[Saha et al.(2021)]{saha2021}
+A. Saha et al., ``Flood Susceptibility Assessment Using Novel Ensemble of Hyperpipes and Support Vector Regression Algorithms,'' \emph{Water}, vol. 13, no. 2, p. 241, Jan. 2021, doi: 10.3390/w13020241.
+
+\bibitem[Lundberg and Lee(2017)]{lundberg2017}
+S.~M.~Lundberg, S.-I.~Lee. A unified approach to interpreting model predictions. In \emph{Advances in Neural Information Processing Systems 30}, 2017.
+
+\bibitem[Aydin and Iban(2023)]{aydin2022}
+H. E. Aydin and M. C. Iban, ``Predicting and analyzing flood susceptibility using boosting-based ensemble machine learning algorithms with SHapley Additive exPlanations,'' \emph{Natural Hazards}, vol. 116, no. 3, pp. 2957--2991, Dec. 2022, doi: 10.1007/s11069-022-05793-y.
+
+\bibitem[Seydi et al.(2023)]{seydi2023}
+S. T. Seydi, Y. Kanani-Sadat, M. Hasanlou, R. Sahraei, J. Chanussot, and M. Amani, ``Comparison of Machine Learning Algorithms for Flood Susceptibility Mapping,'' \emph{Remote Sensing}, vol. 15, no. 1, p. 192, Dec. 2022, doi: 10.3390/rs15010192.
+
+\bibitem[Torres et al.(2012)]{torres2012}
+R. Torres et al., ``GMES Sentinel-1 mission,'' \emph{Remote Sensing of Environment}, vol. 120, pp. 9--24, May 2012, doi: 10.1016/j.rse.2011.05.028.
+
+\bibitem[Arora et al.(2023)]{arora2023}
+M. Arora, S. Sahoo, C. M. Bhatt, P. K. Litoria, and B. Pateriya, ``Rapid flood inundation mapping and impact assessment using Sentinel-1 SAR data over Ghaggar River basin of Punjab, India,'' \emph{Journal of Earth System Science}, vol. 132, no. 4, Art. no. 183, Nov. 2023, doi: 10.1007/s12040-023-02199-7.
+
+\bibitem[Roberts et al.(2017)]{roberts2017}
+D. R. Roberts et al., ``Cross-validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure,'' \emph{Ecography}, vol. 40, no. 8, pp. 913--929, Mar. 2017, doi: 10.1111/ecog.02881.
+
+\bibitem[Ploton et al.(2020)]{ploton2020}
+P. Ploton et al., ``Spatial validation reveals poor predictive performance of large-scale ecological mapping models,'' \emph{Nature Communications}, vol. 11, no. 1, Art. no. 4540, Sep. 2020, doi: 10.1038/s41467-020-18321-y.
+
+\bibitem[Meyer and Pebesma(2021)]{meyer2021}
+``Review for "Predicting into unknown space? Estimating the area of applicability of spatial prediction models",'',, Sep. 2020, doi: 10.1111/2041-210x.13650/v1/review2.
+
+\bibitem[Wang et al.(2020)]{wang2020}
+Y. Wang, Z. Fang, H. Hong, and L. Peng, ``Flood susceptibility mapping using convolutional neural network frameworks,'' \emph{Journal of Hydrology}, vol. 582, p. 124482, Mar. 2020, doi: 10.1016/j.jhydrol.2019.124482.
+
+\bibitem[Avand et al.(2021)]{avand2021}
+M. Avand, H. Moradi, and M. R. lasboyee, ``Using machine learning models, remote sensing, and GIS to investigate the effects of changing climates and land uses on flood probability,'' \emph{Journal of Hydrology}, vol. 595, p. 125663, Apr. 2021, doi: 10.1016/j.jhydrol.2020.125663.
+
+\bibitem[Beven and Kirkby(1979)]{beven1979}
+K.~J.~Beven, M.~J.~Kirkby. A physically based, variable contributing area model of basin hydrology. \emph{Hydrological Sciences Bulletin}, 24(1):43--69, 1979.
+
+\bibitem[Renn\'o et al.(2008)]{renno2008}
+C. D. Rennó et al., ``HAND, a new terrain descriptor using SRTM-DEM: Mapping terra-firme rainforest environments in Amazonia,'' \emph{Remote Sensing of Environment}, vol. 112, no. 9, pp. 3469--3481, Sep. 2008, doi: 10.1016/j.rse.2008.03.018.
+
+\bibitem[Nobre et al.(2011)]{nobre2011}
+A.D. Nobre et al., ``Height Above the Nearest Drainage -- a hydrologically relevant new terrain model,'' \emph{Journal of Hydrology}, vol. 404, no. 1-2, pp. 13--29, Jun. 2011, doi: 10.1016/j.jhydrol.2011.03.051.
+
+\bibitem[Martinis et al.(2009)]{martinis2009}
+S. Martinis, A. Twele, and S. Voigt, ``Towards operational near real-time flood detection using a split-based automatic thresholding procedure on high resolution TerraSAR-X data,'' \emph{Natural Hazards and Earth System Sciences}, vol. 9, no. 2, pp. 303--314, Mar. 2009, doi: 10.5194/nhess-9-303-2009.
+
+\bibitem[Twele et al.(2016)]{twele2016}
+A. Twele, W. Cao, S. Plank, and S. Martinis, ``Sentinel-1-based flood mapping: a fully automated processing chain,'' \emph{International Journal of Remote Sensing}, vol. 37, no. 13, pp. 2990--3004, Jun. 2016, doi: 10.1080/01431161.2016.1192304.
+
+\bibitem[Shen et al.(2019)]{shen2019}
+X. Shen, D. Wang, K. Mao, E. Anagnostou, and Y. Hong, ``Inundation Extent Mapping by Synthetic Aperture Radar: A Review,'' \emph{Remote Sensing}, vol. 11, no. 7, p. 879, Apr. 2019, doi: 10.3390/rs11070879.
+
+\bibitem[Pekel et al.(2016)]{pekel2016}
+J. Pekel, A. Cottam, N. Gorelick, and A. S. Belward, ``High-resolution mapping of global surface water and its long-term changes,'' \emph{Nature}, vol. 540, no. 7633, pp. 418--422, Dec. 2016, doi: 10.1038/nature20584.
+
+\bibitem[Townsend(2002)]{townsend2002}
+P. A. Townsend, ``Relationships between forest structure and the detection of flood inundation in forested wetlands using C-band SAR,'' \emph{International Journal of Remote Sensing}, vol. 23, no. 3, pp. 443--460, Jan. 2002, doi: 10.1080/01431160010014738.
+
+\bibitem[Tsyganskaya et al.(2018)]{tsyganskaya2018}
+V. Tsyganskaya, S. Martinis, P. Marzahn, and R. Ludwig, ``SAR-based detection of flooded vegetation -- a review of characteristics and approaches,'' \emph{International Journal of Remote Sensing}, vol. 39, no. 8, pp. 2255--2293, Jan. 2018, doi: 10.1080/01431161.2017.1420938.
+
+\bibitem[Donchyts et al.(2016)]{donchyts2016}
+G. Donchyts, F. Baart, H. Winsemius, N. Gorelick, J. Kwadijk, and N. v. d. Giesen, ``Earth's surface water change over the past 30 years,'' \emph{Nature Climate Change}, vol. 6, no. 9, pp. 810--813, Aug. 2016, doi: 10.1038/nclimate3111.
+
+\bibitem[Sadhwani and Eldho(2026)]{sadhwani2026}
+K. Sadhwani and T. I. Eldho, ``Machine learning-driven flood hazard assessment: integrating SAR and elevation data for inundation mapping and depth estimation,'' \emph{Natural Hazards}, vol. 122, no. 5, Art. no. 177, Feb. 2026, doi: 10.1007/s11069-025-07949-y.
+
+\bibitem[Thasma et al.(2026)]{thasma2026}
+S. Thasma, Y.-H. Ho, and A. Mostafavi, ``Beyond Backscatter: AlphaEarth Land-Cover Priors for Rapid SAR Flood Segmentation Across Foundation Backbones,'' arXiv:2606.29134, 2026.
+
+\bibitem[Siddiqui et al.(2026)]{siddiqui2026}
+F. H. Siddiqui, M. M. Islam, and S. B. Noor, ``A Temporal Planning Approach for Intelligent Flood Response,'' arXiv:2608.20510, 2026.
+
+\bibitem[Zhang et al.(2019)]{zhang2019}
+N.~Zhang, H.~Alipour. Multi-scale analysis of the impact of flooding on the urban road network. \emph{Transportation Research Part D}, 77:279--293, 2019.
+
+\bibitem[Yin et al.(2016)]{yin2016}
+J.~Yin, D.~Yu, Z.~Yin, M.~Liu, Q.~He. Evaluating the impact and risk of pluvial flash flood on intra-urban road network. \emph{Journal of Hydrology}, 537:138--145, 2016.
+
+\bibitem[Hart et al.(1968)]{hart1968}
+P. Hart, N. Nilsson, and B. Raphael, ``A Formal Basis for the Heuristic Determination of Minimum Cost Paths,'' \emph{IEEE Transactions on Systems Science and Cybernetics}, vol. 4, no. 2, pp. 100--107, 1968, doi: 10.1109/tssc.1968.300136.
+
+\bibitem[Dijkstra(1959)]{dijkstra1959}
+E. W. Dijkstra, ``A Note on Two Problems in Connexion with Graphs,'' \emph{Edsger Wybe Dijkstra}, pp. 287--290, Jul. 2022, doi: 10.1145/3544585.3544600.
+
+\bibitem[Church and ReVelle(1974)]{church1974}
+R. CHURCH and C. R. VELLE, ``THE MAXIMAL COVERING LOCATION PROBLEM,'' \emph{Papers in Regional Science}, vol. 32, no. 1, pp. 101--118, Jan. 1974, doi: 10.1111/j.1435-5597.1974.tb00902.x.
+
+\bibitem[Brotcorne et al.(2003)]{brotcorne2003}
+L. Brotcorne, G. Laporte, and F. Semet, ``Ambulance location and relocation models,'' \emph{European Journal of Operational Research}, vol. 147, no. 3, pp. 451--463, Jun. 2003, doi: 10.1016/S0377-2217(02)00364-8.
+
+\bibitem[Kuhn(1955)]{kuhn1955}
+H. W. Kuhn, ``The Hungarian method for the assignment problem,'' \emph{Naval Research Logistics (NRL)}, vol. 52, no. 1, pp. 7--21, Oct. 2004, doi: 10.1002/nav.20053.
+
+\bibitem[Farhi et al.(2014)]{farhi2014}
+E. Farhi, J. Goldstone, and S. Gutmann, ``A quantum approximate optimization algorithm,'' 2014, arXiv:1411.4028.
+
+\bibitem[Lucas(2014)]{lucas2014}
+A. Lucas, ``Ising formulations of many NP problems,'' \emph{Frontiers in Physics}, vol. 2, 2014, doi: 10.3389/fphy.2014.00005.
+
+\bibitem[Zhou et al.(2020)]{zhou2020}
+L. Zhou, S. Wang, S. Choi, H. Pichler, and M. D. Lukin, ``Quantum Approximate Optimization Algorithm: Performance, Mechanism, and Implementation on Near-Term Devices,'' \emph{Physical Review X}, vol. 10, no. 2, Art. no. 021067, Jun. 2020, doi: 10.1103/physrevx.10.021067.
+
+\bibitem[McClean et al.(2018)]{mcclean2018}
+J. R. McClean, S. Boixo, V. N. Smelyanskiy, R. Babbush, and H. Neven, ``Barren plateaus in quantum neural network training landscapes,'' \emph{Nature Communications}, vol. 9, no. 1, Art. no. 4812, Nov. 2018, doi: 10.1038/s41467-018-07090-4.
+
+\bibitem[Gorelick et al.(2017)]{gorelick2017}
+N. Gorelick, M. Hancher, M. Dixon, S. Ilyushchenko, D. Thau, and R. Moore, ``Google Earth Engine: Planetary-scale geospatial analysis for everyone,'' \emph{Remote Sensing of Environment}, vol. 202, pp. 18--27, Dec. 2017, doi: 10.1016/j.rse.2017.06.031.
+
+\bibitem[Farr et al.(2007)]{farr2007}
+``Shuttle Radar Topography Mission (SRTM),'', \emph{Fact Sheet}, 2009, doi: 10.3133/fs20093087.
+
+\bibitem[Yamazaki et al.(2019)]{yamazaki2019}
+D. Yamazaki, D. Ikeshima, J. Sosa, P. D. Bates, G. H. Allen, and T. M. Pavelsky, ``MERIT Hydro: A High-Resolution Global Hydrography Map Based on Latest Topography Dataset,'' \emph{Water Resources Research}, vol. 55, no. 6, pp. 5053--5073, Jun. 2019, doi: 10.1029/2019wr024873.
+
+\bibitem[Funk et al.(2015)]{funk2015}
+C. Funk et al., ``The climate hazards infrared precipitation with stations---a new environmental record for monitoring extremes,'' \emph{Scientific Data}, vol. 2, no. 1, Art. no. 150066, Dec. 2015, doi: 10.1038/sdata.2015.66.
+
+\bibitem[Zanaga et al.(2021)]{zanaga2021}
+D.~Zanaga et al. ESA WorldCover 10\,m 2020 v100. Zenodo, 2021, doi: 10.5281/zenodo.5571936.
+
+\bibitem[Hersbach et al.(2020)]{hersbach2020}
+H. Hersbach et al., ``The ERA5 global reanalysis,'' \emph{Quarterly Journal of the Royal Meteorological Society}, vol. 146, no. 730, pp. 1999--2049, Jun. 2020, doi: 10.1002/qj.3803.
+
+\bibitem[Boeing(2017)]{boeing2017}
+G. Boeing, ``OSMnx: New methods for acquiring, constructing, analyzing, and visualizing complex street networks,'' \emph{Computers, Environment and Urban Systems}, vol. 65, pp. 126--139, Sep. 2017, doi: 10.1016/j.compenvurbsys.2017.05.004.
+
+\bibitem[Breiman(2001)]{breiman2001}
+``Random forests,'', \emph{Physics Subject Headings (PhySH)}, doi: 10.29172/7c2a6982-6d72-4cd8-bba6-2fccb06a7011.
+
+\bibitem[Chen and Guestrin(2016)]{chen2016}
+T.~Chen, C.~Guestrin. XGBoost: A scalable tree boosting system. In \emph{Proc.\ 22nd ACM SIGKDD}, pages 785--794, 2016.
+
+\bibitem[Niculescu-Mizil and Caruana(2005)]{niculescu2005}
+A. Niculescu-Mizil and R. Caruana, ``Predicting good probabilities with supervised learning,'' in \emph{Proceedings of the 22nd international conference on Machine learning - ICML '05}, pp. 625--632, 2005, doi: 10.1145/1102351.1102430.
+
+\bibitem[Zadrozny and Elkan(2002)]{zadrozny2002}
+B. Zadrozny and C. Elkan, ``Transforming classifier scores into accurate multiclass probability estimates,'' in \emph{Proceedings of the eighth ACM SIGKDD international conference on Knowledge discovery and data mining}, pp. 694--699, Jul. 2002, doi: 10.1145/775047.775151.
+
+\bibitem[Brier(1950)]{brier1950}
+G. W. BRIER, ``VERIFICATION OF FORECASTS EXPRESSED IN TERMS OF PROBABILITY,'' \emph{Monthly Weather Review}, vol. 78, no. 1, pp. 1--3, Jan. 1950, doi: 10.1175/1520-0493(1950)078<0001:vofeit>2.0.co;2.
+
+\bibitem[Elkan(2001)]{elkan2001}
+C.~Elkan. The foundations of cost-sensitive learning. In \emph{Proc.\ 17th International Joint Conference on Artificial Intelligence (IJCAI)}, pages 973--978, 2001.
+
+\bibitem[Saerens et al.(2002)]{saerens2002}
+M. Saerens, P. Latinne, and C. Decaestecker, ``Adjusting the Outputs of a Classifier to New a <i>Priori</i> Probabilities: A Simple Procedure,'' \emph{Neural Computation}, vol. 14, no. 1, pp. 21--41, Jan. 2002, doi: 10.1162/089976602753284446.
+
+\bibitem[Chung and Fabbri(2003)]{chung2003}
+C. F. Chung and A. G. Fabbri, ``Validation of Spatial Prediction Models for Landslide Hazard Mapping,'' \emph{Natural Hazards}, vol. 30, no. 3, pp. 451--472, Nov. 2003, doi: 10.1023/B:NHAZ.0000007172.62651.2b.
+
+\bibitem[Glover et al.(2019)]{glover2019}
+F. Glover, G. Kochenberger, and Y. Du, ``Quantum Bridge Analytics I: a tutorial on formulating and using QUBO models,'' \emph{4OR}, vol. 17, no. 4, pp. 335--371, Dec. 2019, doi: 10.1007/s10288-019-00424-y.
+
+\bibitem[Fitzek et al.(2024)]{fitzek2024}
+D. Fitzek, T. Ghandriz, L. Laine, M. Granath, and A. Frisk Kockum, ``Applying quantum approximate optimization to the heterogeneous vehicle routing problem,'' \emph{Scientific Reports}, vol. 14, Art. no. 25415, Oct. 2024, doi: 10.1038/s41598-024-76967-w.
+
+\bibitem[Powell(1994)]{powell1994}
+M.~J.~D.~Powell. A direct search optimization method that models the objective and constraint functions by linear interpolation. In \emph{Advances in Optimization and Numerical Analysis}, pages 51--67. Springer, 1994, doi: 10.1007/978-94-015-8330-5\_4.
+
+\bibitem[Pedregosa et al.(2011)]{pedregosa2011}
+F.~Pedregosa, G.~Varoquaux, A.~Gramfort, et al. Scikit-learn: Machine learning in Python. \emph{Journal of Machine Learning Research}, 12:2825--2830, 2011.
+
+\bibitem[Harris et al.(2020)]{harris2020}
+C. R. Harris et al., ``Array programming with NumPy,'' \emph{Nature}, vol. 585, no. 7825, pp. 357--362, Sep. 2020, doi: 10.1038/s41586-020-2649-2.
+
+\bibitem[Virtanen et al.(2020)]{virtanen2020}
+P. Virtanen et al., ``SciPy 1.0: fundamental algorithms for scientific computing in Python,'' \emph{Nature Methods}, vol. 17, no. 3, pp. 261--272, Feb. 2020, doi: 10.1038/s41592-019-0686-2.
+
+\bibitem[Hunter(2007)]{hunter2007}
+J. D. Hunter, ``Matplotlib: A 2D Graphics Environment,'' \emph{Computing in Science \& Engineering}, vol. 9, no. 3, pp. 90--95, 2007, doi: 10.1109/MCSE.2007.55.
+
+\end{thebibliography}
+}
+
+\vspace{10pt}
+{\helv\fontsize{9}{11}\bfseries\color{accessblue}\MakeTextUppercase{Author Biographies}\par}
+\vspace{4pt}
+{\fontsize{8}{9.5}\selectfont
+
+\noindent\begin{minipage}[t]{1.0in}\vspace{0pt}%%
+\fbox{\parbox[c][1.25in][c]{0.97in}{\centering\tiny PHOTO\\1.00 x 1.25 in}}
+\end{minipage}\hfill
+\begin{minipage}[t]{\dimexpr\columnwidth-1.1in\relax}\vspace{0pt}%%
+\textbf{MUSTAFA BASTHIKODI} [AUTHOR TO SUPPLY: degree(s) with field, awarding institution and year; current position or programme; research interests; IEEE membership grade if any. Delete these brackets.]
+\end{minipage}
+
+\vspace{6pt}
+
+\noindent\begin{minipage}[t]{1.0in}\vspace{0pt}%%
+\fbox{\parbox[c][1.25in][c]{0.97in}{\centering\tiny PHOTO\\1.00 x 1.25 in}}
+\end{minipage}\hfill
+\begin{minipage}[t]{\dimexpr\columnwidth-1.1in\relax}\vspace{0pt}%%
+\textbf{KRISH P. CHOWTA} [AUTHOR TO SUPPLY: degree(s) with field, awarding institution and year; current position or programme; research interests; IEEE membership grade if any. Delete these brackets.]
+\end{minipage}
+
+\vspace{8pt}
+\noindent\begin{minipage}[t]{1.0in}\vspace{0pt}%%
+\fbox{\parbox[c][1.25in][c]{0.97in}{\centering\tiny PHOTO\\1.00 x 1.25 in}}
+\end{minipage}\hfill
+\begin{minipage}[t]{\dimexpr\columnwidth-1.1in\relax}\vspace{0pt}%%
+\textbf{ADVAITH SHAJEENDRAN} [AUTHOR TO SUPPLY: degree(s) with field, awarding institution and year; current position or programme; research interests; IEEE membership grade if any. Delete these brackets.]
+\end{minipage}
+
+\vspace{8pt}
+\noindent\begin{minipage}[t]{1.0in}\vspace{0pt}%%
+\fbox{\parbox[c][1.25in][c]{0.97in}{\centering\tiny PHOTO\\1.00 x 1.25 in}}
+\end{minipage}\hfill
+\begin{minipage}[t]{\dimexpr\columnwidth-1.1in\relax}\vspace{0pt}%%
+\textbf{DHRITHI K. S.} [AUTHOR TO SUPPLY: degree(s) with field, awarding institution and year; current position or programme; research interests; IEEE membership grade if any. Delete these brackets.]
+\end{minipage}
+
+\vspace{8pt}
+\noindent\begin{minipage}[t]{1.0in}\vspace{0pt}%%
+\fbox{\parbox[c][1.25in][c]{0.97in}{\centering\tiny PHOTO\\1.00 x 1.25 in}}
+\end{minipage}\hfill
+\begin{minipage}[t]{\dimexpr\columnwidth-1.1in\relax}\vspace{0pt}%%
+\textbf{GAMAN A. RAI} [AUTHOR TO SUPPLY: degree(s) with field, awarding institution and year; current position or programme; research interests; IEEE membership grade if any. Delete these brackets.]
+\end{minipage}
+
+\vspace{6pt}
+\noindent\rule{\columnwidth}{0.4pt}\\
+{\fontsize{7}{8.5}\selectfont\itshape VOLUME 12, 2024\hfill}
+}
+
+\end{document}
