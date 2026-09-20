@@ -1,0 +1,1232 @@
+{
+  "region": "Dakshina Kannada district, Karnataka, India",
+  "boundary": "OpenStreetMap Nominatim administrative polygon",
+  "graph": {
+    "nodes": 25407,
+    "edges": 59501,
+    "flood_prone_edges": 9886,
+    "flood_prone_pct": 16.61
+  },
+  "hospitals": {
+    "count": 19,
+    "taluks": [
+      "Bantwal",
+      "Belthangady",
+      "Kadaba",
+      "Mangaluru",
+      "Moodbidri",
+      "Mulki",
+      "Puttur",
+      "Sullia",
+      "Ullal"
+    ],
+    "caveat": "Curated routing origins; inclusion does not verify current ambulance or emergency-department availability."
+  },
+  "scenario_points": 13,
+  "scenarios": {
+    "dry": {
+      "trigger_T": 0.0,
+      "blocked_edges": 0,
+      "reachable_pairs": 247,
+      "total_pairs": 247,
+      "focus_pair": {
+        "blind": {
+          "kind": "blind",
+          "hospital": "wenlock",
+          "incident": "kulur",
+          "minutes": 9.5,
+          "distance_km": 8.46,
+          "mean_exposure": 0.0,
+          "max_exposure": 0.0,
+          "exposure_profile": [
+            {
+              "distance_km": 0.007,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 0.063,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 0.187,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 0.493,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 0.523,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 0.536,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 0.793,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 0.806,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 0.909,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 1.087,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 1.102,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 1.133,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 1.147,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 1.164,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 1.463,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 1.625,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 1.634,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 1.644,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 1.712,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 1.825,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 1.919,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 2.155,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 2.265,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 2.4,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 2.498,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 2.759,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 2.864,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 2.987,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 3.086,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 3.098,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 3.429,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 3.451,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 3.557,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 3.603,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 3.91,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 4.558,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 4.625,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 5.547,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 6.094,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 6.171,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 6.976,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 7.353,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 7.368,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 7.474,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 7.554,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 8.191,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 8.203,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 8.311,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 8.459,
+              "risk": 0.0
+            }
+          ]
+        },
+        "aware": {
+          "kind": "aware",
+          "hospital": "wenlock",
+          "incident": "kulur",
+          "minutes": 9.5,
+          "distance_km": 8.46,
+          "mean_exposure": 0.0,
+          "max_exposure": 0.0,
+          "exposure_profile": [
+            {
+              "distance_km": 0.007,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 0.063,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 0.187,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 0.493,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 0.523,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 0.536,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 0.793,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 0.806,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 0.909,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 1.087,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 1.102,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 1.133,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 1.147,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 1.164,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 1.463,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 1.625,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 1.634,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 1.644,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 1.712,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 1.825,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 1.919,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 2.155,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 2.265,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 2.4,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 2.498,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 2.759,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 2.864,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 2.987,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 3.086,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 3.098,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 3.429,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 3.451,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 3.557,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 3.603,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 3.91,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 4.558,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 4.625,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 5.547,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 6.094,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 6.171,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 6.976,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 7.353,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 7.368,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 7.474,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 7.554,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 8.191,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 8.203,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 8.311,
+              "risk": 0.0
+            },
+            {
+              "distance_km": 8.459,
+              "risk": 0.0
+            }
+          ]
+        }
+      }
+    },
+    "may2025": {
+      "trigger_T": 0.7,
+      "blocked_edges": 4019,
+      "reachable_pairs": 192,
+      "total_pairs": 247,
+      "focus_pair": {
+        "blind": {
+          "kind": "blind",
+          "hospital": "wenlock",
+          "incident": "kulur",
+          "minutes": 9.5,
+          "distance_km": 8.46,
+          "mean_exposure": 0.193,
+          "max_exposure": 0.69,
+          "exposure_profile": [
+            {
+              "distance_km": 0.007,
+              "risk": 0.0418
+            },
+            {
+              "distance_km": 0.063,
+              "risk": 0.0418
+            },
+            {
+              "distance_km": 0.187,
+              "risk": 0.0541
+            },
+            {
+              "distance_km": 0.493,
+              "risk": 0.0406
+            },
+            {
+              "distance_km": 0.523,
+              "risk": 0.0364
+            },
+            {
+              "distance_km": 0.536,
+              "risk": 0.0364
+            },
+            {
+              "distance_km": 0.793,
+              "risk": 0.0216
+            },
+            {
+              "distance_km": 0.806,
+              "risk": 0.0467
+            },
+            {
+              "distance_km": 0.909,
+              "risk": 0.0467
+            },
+            {
+              "distance_km": 1.087,
+              "risk": 0.0852
+            },
+            {
+              "distance_km": 1.102,
+              "risk": 0.0223
+            },
+            {
+              "distance_km": 1.133,
+              "risk": 0.0223
+            },
+            {
+              "distance_km": 1.147,
+              "risk": 0.0223
+            },
+            {
+              "distance_km": 1.164,
+              "risk": 0.0223
+            },
+            {
+              "distance_km": 1.463,
+              "risk": 0.0116
+            },
+            {
+              "distance_km": 1.625,
+              "risk": 0.0136
+            },
+            {
+              "distance_km": 1.634,
+              "risk": 0.017
+            },
+            {
+              "distance_km": 1.644,
+              "risk": 0.017
+            },
+            {
+              "distance_km": 1.712,
+              "risk": 0.017
+            },
+            {
+              "distance_km": 1.825,
+              "risk": 0.0695
+            },
+            {
+              "distance_km": 1.919,
+              "risk": 0.0575
+            },
+            {
+              "distance_km": 2.155,
+              "risk": 0.081
+            },
+            {
+              "distance_km": 2.265,
+              "risk": 0.4317
+            },
+            {
+              "distance_km": 2.4,
+              "risk": 0.6274
+            },
+            {
+              "distance_km": 2.498,
+              "risk": 0.6269
+            },
+            {
+              "distance_km": 2.759,
+              "risk": 0.292
+            },
+            {
+              "distance_km": 2.864,
+              "risk": 0.1205
+            },
+            {
+              "distance_km": 2.987,
+              "risk": 0.0083
+            },
+            {
+              "distance_km": 3.086,
+              "risk": 0.0228
+            },
+            {
+              "distance_km": 3.098,
+              "risk": 0.0228
+            },
+            {
+              "distance_km": 3.429,
+              "risk": 0.0365
+            },
+            {
+              "distance_km": 3.451,
+              "risk": 0.0279
+            },
+            {
+              "distance_km": 3.557,
+              "risk": 0.0279
+            },
+            {
+              "distance_km": 3.603,
+              "risk": 0.0445
+            },
+            {
+              "distance_km": 3.91,
+              "risk": 0.1001
+            },
+            {
+              "distance_km": 4.558,
+              "risk": 0.2212
+            },
+            {
+              "distance_km": 4.625,
+              "risk": 0.2563
+            },
+            {
+              "distance_km": 5.547,
+              "risk": 0.1891
+            },
+            {
+              "distance_km": 6.094,
+              "risk": 0.5456
+            },
+            {
+              "distance_km": 6.171,
+              "risk": 0.663
+            },
+            {
+              "distance_km": 6.976,
+              "risk": 0.2747
+            },
+            {
+              "distance_km": 7.353,
+              "risk": 0.6883
+            },
+            {
+              "distance_km": 7.368,
+              "risk": 0.6885
+            },
+            {
+              "distance_km": 7.474,
+              "risk": 0.6905
+            },
+            {
+              "distance_km": 7.554,
+              "risk": 0.6774
+            },
+            {
+              "distance_km": 8.191,
+              "risk": 0.5443
+            },
+            {
+              "distance_km": 8.203,
+              "risk": 0.3005
+            },
+            {
+              "distance_km": 8.311,
+              "risk": 0.2672
+            },
+            {
+              "distance_km": 8.459,
+              "risk": 0.2429
+            }
+          ]
+        },
+        "aware": {
+          "kind": "aware",
+          "hospital": "wenlock",
+          "incident": "kulur",
+          "minutes": 16.7,
+          "distance_km": 13.31,
+          "mean_exposure": 0.073,
+          "max_exposure": 0.545,
+          "exposure_profile": [
+            {
+              "distance_km": 0.007,
+              "risk": 0.0418
+            },
+            {
+              "distance_km": 0.063,
+              "risk": 0.0418
+            },
+            {
+              "distance_km": 0.187,
+              "risk": 0.0541
+            },
+            {
+              "distance_km": 0.493,
+              "risk": 0.0406
+            },
+            {
+              "distance_km": 0.523,
+              "risk": 0.0364
+            },
+            {
+              "distance_km": 0.536,
+              "risk": 0.0364
+            },
+            {
+              "distance_km": 0.793,
+              "risk": 0.0216
+            },
+            {
+              "distance_km": 0.806,
+              "risk": 0.0467
+            },
+            {
+              "distance_km": 0.909,
+              "risk": 0.0467
+            },
+            {
+              "distance_km": 1.087,
+              "risk": 0.0852
+            },
+            {
+              "distance_km": 1.102,
+              "risk": 0.0223
+            },
+            {
+              "distance_km": 1.133,
+              "risk": 0.0223
+            },
+            {
+              "distance_km": 1.147,
+              "risk": 0.0223
+            },
+            {
+              "distance_km": 1.164,
+              "risk": 0.0223
+            },
+            {
+              "distance_km": 1.181,
+              "risk": 0.0223
+            },
+            {
+              "distance_km": 1.492,
+              "risk": 0.0134
+            },
+            {
+              "distance_km": 1.498,
+              "risk": 0.016
+            },
+            {
+              "distance_km": 1.562,
+              "risk": 0.0225
+            },
+            {
+              "distance_km": 1.589,
+              "risk": 0.0225
+            },
+            {
+              "distance_km": 1.764,
+              "risk": 0.0463
+            },
+            {
+              "distance_km": 1.828,
+              "risk": 0.0094
+            },
+            {
+              "distance_km": 1.874,
+              "risk": 0.0094
+            },
+            {
+              "distance_km": 2.033,
+              "risk": 0.0369
+            },
+            {
+              "distance_km": 2.267,
+              "risk": 0.0124
+            },
+            {
+              "distance_km": 2.341,
+              "risk": 0.0222
+            },
+            {
+              "distance_km": 2.355,
+              "risk": 0.0222
+            },
+            {
+              "distance_km": 2.579,
+              "risk": 0.0029
+            },
+            {
+              "distance_km": 2.696,
+              "risk": 0.0097
+            },
+            {
+              "distance_km": 2.706,
+              "risk": 0.0097
+            },
+            {
+              "distance_km": 2.721,
+              "risk": 0.0054
+            },
+            {
+              "distance_km": 2.801,
+              "risk": 0.007
+            },
+            {
+              "distance_km": 2.929,
+              "risk": 0.0041
+            },
+            {
+              "distance_km": 2.964,
+              "risk": 0.0041
+            },
+            {
+              "distance_km": 3.027,
+              "risk": 0.048
+            },
+            {
+              "distance_km": 3.14,
+              "risk": 0.048
+            },
+            {
+              "distance_km": 3.277,
+              "risk": 0.0202
+            },
+            {
+              "distance_km": 3.449,
+              "risk": 0.0223
+            },
+            {
+              "distance_km": 3.467,
+              "risk": 0.0593
+            },
+            {
+              "distance_km": 3.475,
+              "risk": 0.0593
+            },
+            {
+              "distance_km": 3.702,
+              "risk": 0.0074
+            },
+            {
+              "distance_km": 3.775,
+              "risk": 0.0075
+            },
+            {
+              "distance_km": 3.881,
+              "risk": 0.0172
+            },
+            {
+              "distance_km": 4.022,
+              "risk": 0.0105
+            },
+            {
+              "distance_km": 4.033,
+              "risk": 0.0105
+            },
+            {
+              "distance_km": 4.19,
+              "risk": 0.0048
+            },
+            {
+              "distance_km": 4.346,
+              "risk": 0.0029
+            },
+            {
+              "distance_km": 4.621,
+              "risk": 0.0485
+            },
+            {
+              "distance_km": 4.678,
+              "risk": 0.0195
+            },
+            {
+              "distance_km": 4.756,
+              "risk": 0.0195
+            },
+            {
+              "distance_km": 4.785,
+              "risk": 0.0406
+            },
+            {
+              "distance_km": 4.798,
+              "risk": 0.0406
+            },
+            {
+              "distance_km": 4.943,
+              "risk": 0.0406
+            },
+            {
+              "distance_km": 5.272,
+              "risk": 0.0119
+            },
+            {
+              "distance_km": 5.372,
+              "risk": 0.0361
+            },
+            {
+              "distance_km": 5.491,
+              "risk": 0.0244
+            },
+            {
+              "distance_km": 5.629,
+              "risk": 0.0134
+            },
+            {
+              "distance_km": 5.642,
+              "risk": 0.0134
+            },
+            {
+              "distance_km": 5.763,
+              "risk": 0.0267
+            },
+            {
+              "distance_km": 5.851,
+              "risk": 0.0769
+            },
+            {
+              "distance_km": 5.959,
+              "risk": 0.0769
+            },
+            {
+              "distance_km": 6.074,
+              "risk": 0.0647
+            },
+            {
+              "distance_km": 6.198,
+              "risk": 0.0457
+            },
+            {
+              "distance_km": 6.212,
+              "risk": 0.0457
+            },
+            {
+              "distance_km": 6.433,
+              "risk": 0.0751
+            },
+            {
+              "distance_km": 6.628,
+              "risk": 0.0508
+            },
+            {
+              "distance_km": 6.801,
+              "risk": 0.0248
+            },
+            {
+              "distance_km": 6.996,
+              "risk": 0.0593
+            },
+            {
+              "distance_km": 7.055,
+              "risk": 0.0813
+            },
+            {
+              "distance_km": 7.267,
+              "risk": 0.0197
+            },
+            {
+              "distance_km": 7.273,
+              "risk": 0.0486
+            },
+            {
+              "distance_km": 7.35,
+              "risk": 0.0486
+            },
+            {
+              "distance_km": 7.454,
+              "risk": 0.0986
+            },
+            {
+              "distance_km": 7.564,
+              "risk": 0.0986
+            },
+            {
+              "distance_km": 7.749,
+              "risk": 0.0514
+            },
+            {
+              "distance_km": 7.788,
+              "risk": 0.0323
+            },
+            {
+              "distance_km": 7.846,
+              "risk": 0.0323
+            },
+            {
+              "distance_km": 7.952,
+              "risk": 0.0364
+            },
+            {
+              "distance_km": 7.983,
+              "risk": 0.0364
+            },
+            {
+              "distance_km": 7.997,
+              "risk": 0.0364
+            },
+            {
+              "distance_km": 8.193,
+              "risk": 0.0124
+            },
+            {
+              "distance_km": 8.376,
+              "risk": 0.0705
+            },
+            {
+              "distance_km": 8.537,
+              "risk": 0.0751
+            },
+            {
+              "distance_km": 8.54,
+              "risk": 0.0497
+            },
+            {
+              "distance_km": 8.559,
+              "risk": 0.0497
+            },
+            {
+              "distance_km": 8.748,
+              "risk": 0.1794
+            },
+            {
+              "distance_km": 8.896,
+              "risk": 0.0716
+            },
+            {
+              "distance_km": 9.083,
+              "risk": 0.067
+            },
+            {
+              "distance_km": 9.427,
+              "risk": 0.0325
+            },
+            {
+              "distance_km": 9.628,
+              "risk": 0.0442
+            },
+            {
+              "distance_km": 9.644,
+              "risk": 0.127
+            },
+            {
+              "distance_km": 9.651,
+              "risk": 0.127
+            },
+            {
+              "distance_km": 9.662,
+              "risk": 0.127
+            },
+            {
+              "distance_km": 9.708,
+              "risk": 0.0675
+            },
+            {
+              "distance_km": 9.735,
+              "risk": 0.1027
+            },
+            {
+              "distance_km": 9.921,
+              "risk": 0.0145
+            },
+            {
+              "distance_km": 9.958,
+              "risk": 0.0589
+            },
+            {
+              "distance_km": 9.996,
+              "risk": 0.0233
+            },
+            {
+              "distance_km": 10.263,
+              "risk": 0.0199
+            },
+            {
+              "distance_km": 10.375,
+              "risk": 0.312
+            },
+            {
+              "distance_km": 10.428,
+              "risk": 0.0285
+            },
+            {
+              "distance_km": 10.475,
+              "risk": 0.0285
+            },
+            {
+              "distance_km": 10.549,
+              "risk": 0.2158
+            },
+            {
+              "distance_km": 10.562,
+              "risk": 0.2158
+            },
+            {
+              "distance_km": 10.613,
+              "risk": 0.2158
+            },
+            {
+              "distance_km": 10.636,
+              "risk": 0.0702
+            },
+            {
+              "distance_km": 10.735,
+              "risk": 0.0702
+            },
+            {
+              "distance_km": 10.759,
+              "risk": 0.1285
+            },
+            {
+              "distance_km": 10.818,
+              "risk": 0.1285
+            },
+            {
+              "distance_km": 10.918,
+              "risk": 0.0174
+            },
+            {
+              "distance_km": 10.971,
+              "risk": 0.0174
+            },
+            {
+              "distance_km": 11.001,
+              "risk": 0.0345
+            },
+            {
+              "distance_km": 11.012,
+              "risk": 0.0345
+            },
+            {
+              "distance_km": 11.023,
+              "risk": 0.0345
+            },
+            {
+              "distance_km": 11.135,
+              "risk": 0.0341
+            },
+            {
+              "distance_km": 11.291,
+              "risk": 0.0669
+            },
+            {
+              "distance_km": 11.36,
+              "risk": 0.0669
+            },
+            {
+              "distance_km": 11.427,
+              "risk": 0.0417
+            },
+            {
+              "distance_km": 11.586,
+              "risk": 0.0361
+            },
+            {
+              "distance_km": 11.638,
+              "risk": 0.0361
+            },
+            {
+              "distance_km": 11.755,
+              "risk": 0.0073
+            },
+            {
+              "distance_km": 11.856,
+              "risk": 0.037
+            },
+            {
+              "distance_km": 11.896,
+              "risk": 0.0728
+            },
+            {
+              "distance_km": 11.913,
+              "risk": 0.0728
+            },
+            {
+              "distance_km": 11.962,
+              "risk": 0.0728
+            },
+            {
+              "distance_km": 11.977,
+              "risk": 0.0728
+            },
+            {
+              "distance_km": 12.04,
+              "risk": 0.0223
+            },
+            {
+              "distance_km": 12.271,
+              "risk": 0.0966
+            },
+            {
+              "distance_km": 12.493,
+              "risk": 0.4245
+            },
+            {
+              "distance_km": 12.514,
+              "risk": 0.2924
+            },
+            {
+              "distance_km": 12.652,
+              "risk": 0.1254
+            },
+            {
+              "distance_km": 12.722,
+              "risk": 0.3672
+            },
+            {
+              "distance_km": 12.734,
+              "risk": 0.3672
+            },
+            {
+              "distance_km": 12.766,
+              "risk": 0.3672
+            },
+            {
+              "distance_km": 12.835,
+              "risk": 0.2818
+            },
+            {
+              "distance_km": 13.02,
+              "risk": 0.545
+            },
+            {
+              "distance_km": 13.045,
+              "risk": 0.3005
+            },
+            {
+              "distance_km": 13.057,
+              "risk": 0.3005
+            },
+            {
+              "distance_km": 13.165,
+              "risk": 0.2672
+            },
+            {
+              "distance_km": 13.313,
+              "risk": 0.2429
+            }
+          ]
+        }
+      }
+    }
+  }
+}

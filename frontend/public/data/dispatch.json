@@ -1,0 +1,171 @@
+{
+  "drycalm": {
+    "trigger": 0.0,
+    "removed_edges": 0,
+    "eta_min": [
+      [
+        28.988748723533217,
+        57.009175075754605,
+        104.39135671170594
+      ],
+      [
+        69.9121261892171,
+        48.769288065951805,
+        70.8108184721309
+      ],
+      [
+        99.56329474321744,
+        78.68696582108412,
+        46.96488925163336
+      ]
+    ],
+    "stations": [
+      "Government Wenlock District Hospital",
+      "Puttur General Hospital",
+      "Sullia Taluk Government Hospital"
+    ],
+    "incidents": [
+      "Mulki",
+      "Belthangady",
+      "Subrahmanya"
+    ],
+    "optimal_assignment": {
+      "Government Wenlock District Hospital": "Mulki",
+      "Puttur General Hospital": "Belthangady",
+      "Sullia Taluk Government Hospital": "Subrahmanya"
+    },
+    "optimal_cost_min": 124.72292604111837,
+    "qaoa": {
+      "1": {
+        "p": 1,
+        "expectation": 829.3002585104856,
+        "e_min": 124.7229260411184,
+        "e_max": 5639.881785216112,
+        "approx_ratio": 0.8722471373064375,
+        "prob_optimal": 7.997381350542455e-08,
+        "prob_feasible": 0.03478539528654145,
+        "params": [
+          0.10456840271936903,
+          0.8083466891311047
+        ]
+      },
+      "2": {
+        "p": 2,
+        "expectation": 741.3827883364504,
+        "e_min": 124.7229260411184,
+        "e_max": 5639.881785216112,
+        "approx_ratio": 0.8881881958360167,
+        "prob_optimal": 0.0003128402015416822,
+        "prob_feasible": 0.07313534216085144,
+        "params": [
+          -0.030309553877229112,
+          -0.052292601547028875,
+          0.8169636889096283,
+          0.28578370068991127
+        ]
+      },
+      "3": {
+        "p": 3,
+        "expectation": 602.2925439341504,
+        "e_min": 124.7229260411184,
+        "e_max": 5639.881785216112,
+        "approx_ratio": 0.9134078219526625,
+        "prob_optimal": 0.06538511185876043,
+        "prob_feasible": 0.20549014591332054,
+        "params": [
+          -0.03130529304843321,
+          -0.04597829571527798,
+          0.04645867421426852,
+          0.9168932169064619,
+          0.5516172303013683,
+          0.39208317279907723
+        ]
+      }
+    }
+  },
+  "may2025_flood": {
+    "trigger": 0.701,
+    "removed_edges": 4043,
+    "eta_min": [
+      [
+        76.08382552967417,
+        89.15512902789216,
+        190.92651818164177
+      ],
+      [
+        213.67108784161547,
+        121.02659218421967,
+        89.92318197901555
+      ],
+      [
+        237.32586048744952,
+        144.68136483005372,
+        53.76014597042948
+      ]
+    ],
+    "stations": [
+      "Government Wenlock District Hospital",
+      "Puttur General Hospital",
+      "Sullia Taluk Government Hospital"
+    ],
+    "incidents": [
+      "Mulki",
+      "Belthangady",
+      "Subrahmanya"
+    ],
+    "optimal_assignment": {
+      "Government Wenlock District Hospital": "Mulki",
+      "Puttur General Hospital": "Belthangady",
+      "Sullia Taluk Government Hospital": "Subrahmanya"
+    },
+    "optimal_cost_min": 250.87056368432332,
+    "qaoa": {
+      "1": {
+        "p": 1,
+        "expectation": 1322.0552381167772,
+        "e_min": 250.87056368432332,
+        "e_max": 12632.195009429573,
+        "approx_ratio": 0.913483837764985,
+        "prob_optimal": 8.447344949635114e-07,
+        "prob_feasible": 0.022682496250923573,
+        "params": [
+          -0.2706755163365841,
+          0.8790463564914749
+        ]
+      },
+      "2": {
+        "p": 2,
+        "expectation": 1669.6143512251124,
+        "e_min": 250.87056368432332,
+        "e_max": 12632.195009429573,
+        "approx_ratio": 0.8854125991320476,
+        "prob_optimal": 0.01248571415753207,
+        "prob_feasible": 0.09550216701848668,
+        "params": [
+          -0.0006881732183207611,
+          0.16571112205368374,
+          0.506283417092274,
+          0.23995622991046364
+        ]
+      },
+      "3": {
+        "p": 3,
+        "expectation": 1646.1384266791906,
+        "e_min": 250.87056368432332,
+        "e_max": 12632.195009429573,
+        "approx_ratio": 0.8873086745195229,
+        "prob_optimal": 0.13893501960292098,
+        "prob_feasible": 0.1456692346538523,
+        "params": [
+          0.11127459941530955,
+          0.10598886035485067,
+          0.04032121453993214,
+          0.39561820565959266,
+          0.28131843643569,
+          0.9909932319210645
+        ]
+      }
+    }
+  },
+  "plan_changed": []
+}

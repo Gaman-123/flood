@@ -1,0 +1,93 @@
+[
+  {
+    "id": "mangaluru",
+    "name": "Mangaluru",
+    "lat": 12.8698,
+    "lon": 74.8431,
+    "kind": "scenario_point"
+  },
+  {
+    "id": "kulur",
+    "name": "Kulur",
+    "lat": 12.925,
+    "lon": 74.827,
+    "kind": "scenario_point"
+  },
+  {
+    "id": "ullal",
+    "name": "Ullal",
+    "lat": 12.805,
+    "lon": 74.86,
+    "kind": "scenario_point"
+  },
+  {
+    "id": "mulki",
+    "name": "Mulki",
+    "lat": 13.091,
+    "lon": 74.793,
+    "kind": "scenario_point"
+  },
+  {
+    "id": "moodbidri",
+    "name": "Moodbidri",
+    "lat": 13.066,
+    "lon": 74.995,
+    "kind": "scenario_point"
+  },
+  {
+    "id": "bantwal",
+    "name": "Bantwal",
+    "lat": 12.89,
+    "lon": 75.035,
+    "kind": "scenario_point"
+  },
+  {
+    "id": "vitla",
+    "name": "Vitla",
+    "lat": 12.76,
+    "lon": 75.12,
+    "kind": "scenario_point"
+  },
+  {
+    "id": "puttur",
+    "name": "Puttur",
+    "lat": 12.769,
+    "lon": 75.207,
+    "kind": "scenario_point"
+  },
+  {
+    "id": "belthangady",
+    "name": "Belthangady",
+    "lat": 12.99,
+    "lon": 75.3,
+    "kind": "scenario_point"
+  },
+  {
+    "id": "uppinangady",
+    "name": "Uppinangady",
+    "lat": 12.837,
+    "lon": 75.247,
+    "kind": "scenario_point"
+  },
+  {
+    "id": "kadaba",
+    "name": "Kadaba",
+    "lat": 12.713,
+    "lon": 75.47,
+    "kind": "scenario_point"
+  },
+  {
+    "id": "sullia",
+    "name": "Sullia",
+    "lat": 12.558,
+    "lon": 75.39,
+    "kind": "scenario_point"
+  },
+  {
+    "id": "subrahmanya",
+    "name": "Subrahmanya",
+    "lat": 12.668,
+    "lon": 75.615,
+    "kind": "scenario_point"
+  }
+]

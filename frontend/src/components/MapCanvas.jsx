@@ -152,17 +152,22 @@ export default function MapCanvas() {
         } catch { /* layer paint shape varies by style */ }
       });
 
-      const lbl = map.getStyle().layers.find((l) => l.type === "symbol" && l.layout?.["text-field"])?.id;
-      map.addLayer({
-        id: "buildings-3d", type: "fill-extrusion", source: "composite", "source-layer": "building",
-        minzoom: 13, filter: ["==", ["get", "extrude"], "true"],
-        paint: { "fill-extrusion-color": "#cdd4e0", "fill-extrusion-height": ["get", "height"], "fill-extrusion-base": ["get", "min_height"], "fill-extrusion-opacity": 0.85 },
-      }, lbl);
+      if (MAPBOX_TOKEN) {
+        try {
+          const lbl = map.getStyle().layers.find((l) => l.type === "symbol" && l.layout?.["text-field"])?.id;
+          map.addLayer({
+            id: "buildings-3d", type: "fill-extrusion", source: "composite", "source-layer": "building",
+            minzoom: 13, filter: ["==", ["get", "extrude"], "true"],
+            paint: { "fill-extrusion-color": "#cdd4e0", "fill-extrusion-height": ["get", "height"], "fill-extrusion-base": ["get", "min_height"], "fill-extrusion-opacity": 0.85 },
+          }, lbl);
+        } catch {}
+      }
 
       try {
         const ov = await loadOverlay();
         map.addSource("susc", { type: "image", url: ov.url, coordinates: ov.coordinates });
-        map.addLayer({ id: "susc", type: "raster", source: "susc", paint: { "raster-opacity": 0.72, "raster-resampling": "linear", "raster-fade-duration": 300 } }, "buildings-3d");
+        const beforeLayer = map.getLayer("buildings-3d") ? "buildings-3d" : undefined;
+        map.addLayer({ id: "susc", type: "raster", source: "susc", paint: { "raster-opacity": 0.72, "raster-resampling": "linear", "raster-fade-duration": 300 } }, beforeLayer);
       } catch (e) { console.warn("overlay", e); }
 
       try {

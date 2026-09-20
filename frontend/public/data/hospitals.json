@@ -1,0 +1,211 @@
+[
+  {
+    "id": "wenlock",
+    "name": "Government Wenlock District Hospital",
+    "short": "Wenlock",
+    "lat": 12.867142,
+    "lon": 74.84277,
+    "taluk": "Mangaluru",
+    "ownership": "government",
+    "osm_type": "way",
+    "osm_id": 132058594
+  },
+  {
+    "id": "aj",
+    "name": "A. J. Hospital and Research Centre",
+    "short": "A. J.",
+    "lat": 12.899388,
+    "lon": 74.84572,
+    "taluk": "Mangaluru",
+    "ownership": "private",
+    "osm_type": "way",
+    "osm_id": 319584642
+  },
+  {
+    "id": "kmc",
+    "name": "KMC Hospital Ambedkar Circle",
+    "short": "KMC",
+    "lat": 12.87176,
+    "lon": 74.848976,
+    "taluk": "Mangaluru",
+    "ownership": "private",
+    "osm_type": "way",
+    "osm_id": 26564971
+  },
+  {
+    "id": "father_muller",
+    "name": "Father Muller Medical College Hospital",
+    "short": "Father Muller",
+    "lat": 12.866241,
+    "lon": 74.859738,
+    "taluk": "Mangaluru",
+    "ownership": "private",
+    "osm_type": "way",
+    "osm_id": 160151297
+  },
+  {
+    "id": "indiana",
+    "name": "Indiana Hospital and Heart Institute",
+    "short": "Indiana",
+    "lat": 12.86768,
+    "lon": 74.866423,
+    "taluk": "Mangaluru",
+    "ownership": "private",
+    "osm_type": "node",
+    "osm_id": 1699731456
+  },
+  {
+    "id": "yenepoya",
+    "name": "Yenepoya Medical College Hospital",
+    "short": "Yenepoya",
+    "lat": 12.812225,
+    "lon": 74.88057,
+    "taluk": "Ullal",
+    "ownership": "private",
+    "osm_type": "node",
+    "osm_id": 6944343600
+  },
+  {
+    "id": "srinivas_mukka",
+    "name": "Srinivas Hospital Mukka",
+    "short": "Srinivas Mukka",
+    "lat": 13.021434,
+    "lon": 74.791943,
+    "taluk": "Mangaluru",
+    "ownership": "private",
+    "osm_type": "way",
+    "osm_id": 228511262
+  },
+  {
+    "id": "surathkal_gh",
+    "name": "Surathkal Government Hospital",
+    "short": "Surathkal GH",
+    "lat": 12.987288,
+    "lon": 74.80354,
+    "taluk": "Mangaluru",
+    "ownership": "government",
+    "osm_type": "way",
+    "osm_id": 239545312
+  },
+  {
+    "id": "mulki_gh",
+    "name": "Mulki Government Hospital",
+    "short": "Mulki GH",
+    "lat": 13.087491,
+    "lon": 74.792202,
+    "taluk": "Mulki",
+    "ownership": "government",
+    "osm_type": "way",
+    "osm_id": 226734809
+  },
+  {
+    "id": "shirthady_gh",
+    "name": "Shirthady Government Hospital",
+    "short": "Shirthady GH",
+    "lat": 13.085766,
+    "lon": 75.082503,
+    "taluk": "Moodbidri",
+    "ownership": "government",
+    "osm_type": "node",
+    "osm_id": 7202935830
+  },
+  {
+    "id": "bantwal_th",
+    "name": "Bantwal Taluk General Hospital",
+    "short": "Bantwal TH",
+    "lat": 12.894021,
+    "lon": 75.041558,
+    "taluk": "Bantwal",
+    "ownership": "government",
+    "osm_type": "node",
+    "osm_id": 7213565706
+  },
+  {
+    "id": "vitla_gh",
+    "name": "Vitla Government Hospital",
+    "short": "Vitla GH",
+    "lat": 12.763476,
+    "lon": 75.097878,
+    "taluk": "Bantwal",
+    "ownership": "government",
+    "osm_type": "node",
+    "osm_id": 922426889
+  },
+  {
+    "id": "puttur_gh",
+    "name": "Puttur General Hospital",
+    "short": "Puttur GH",
+    "lat": 12.758473,
+    "lon": 75.200597,
+    "taluk": "Puttur",
+    "ownership": "government",
+    "osm_type": "node",
+    "osm_id": 7202723940
+  },
+  {
+    "id": "belthangady_th",
+    "name": "Belthangady Taluk Hospital",
+    "short": "Belthangady TH",
+    "lat": 12.988388,
+    "lon": 75.275877,
+    "taluk": "Belthangady",
+    "ownership": "government",
+    "osm_type": "node",
+    "osm_id": 7202935866
+  },
+  {
+    "id": "sdm_ujire",
+    "name": "SDM Hospital Ujire",
+    "short": "SDM Ujire",
+    "lat": 12.994598,
+    "lon": 75.332131,
+    "taluk": "Belthangady",
+    "ownership": "private",
+    "osm_type": "way",
+    "osm_id": 1029706100
+  },
+  {
+    "id": "ashwini_nellyady",
+    "name": "Ashwini Hospital Nellyady",
+    "short": "Ashwini Nellyady",
+    "lat": 12.83077,
+    "lon": 75.41323,
+    "taluk": "Kadaba",
+    "ownership": "private",
+    "osm_type": "node",
+    "osm_id": 6938544863
+  },
+  {
+    "id": "shastri_kadaba",
+    "name": "Shastri Hospital Kadaba",
+    "short": "Shastri Kadaba",
+    "lat": 12.74354,
+    "lon": 75.471006,
+    "taluk": "Kadaba",
+    "ownership": "private",
+    "osm_type": "node",
+    "osm_id": 7562741471
+  },
+  {
+    "id": "sullia_th",
+    "name": "Sullia Taluk Government Hospital",
+    "short": "Sullia TH",
+    "lat": 12.562293,
+    "lon": 75.389772,
+    "taluk": "Sullia",
+    "ownership": "government",
+    "osm_type": "node",
+    "osm_id": 7202979523
+  },
+  {
+    "id": "subrahmanya_gh",
+    "name": "Subrahmanya Government Hospital",
+    "short": "Subrahmanya GH",
+    "lat": 12.677804,
+    "lon": 75.599911,
+    "taluk": "Sullia",
+    "ownership": "government",
+    "osm_type": "node",
+    "osm_id": 7202723959
+  }
+]
