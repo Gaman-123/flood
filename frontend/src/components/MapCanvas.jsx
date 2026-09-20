@@ -10,8 +10,14 @@ import { riskColorCss } from "../lib/colors";
 import GestureControl from "./GestureControl";
 import ExplainPanel from "./ExplainPanel";
 
-mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
-const STYLE = "mapbox://styles/mapbox/light-v11";
+const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN || "";
+if (MAPBOX_TOKEN) {
+  mapboxgl.accessToken = MAPBOX_TOKEN;
+}
+const STYLE = MAPBOX_TOKEN 
+  ? "mapbox://styles/mapbox/light-v11" 
+  : "https://basemaps.cartocdn.com/gl/positron-gl-style/json";
+
 const EMPTY = { type: "FeatureCollection", features: [] };
 const ROAD_COLOR = ["interpolate", ["linear"], ["get", "s"],
   0.0, "#1e64b4", 0.25, "#46aac8", 0.5, "#f0dc5a", 0.75, "#f08c32", 1.0, "#dc2828"];
@@ -81,10 +87,18 @@ export default function MapCanvas() {
     ro.observe(containerRef.current);
 
     map.on("style.load", async () => {
-      map.addSource("mapbox-dem", { type: "raster-dem", url: "mapbox://mapbox.mapbox-terrain-dem-v1", tileSize: 512, maxzoom: 14 });
-      map.setTerrain({ source: "mapbox-dem", exaggeration: 1.5 });
-      map.setFog({ range: [6, 18], color: "#eef1f6", "high-color": "#dbe6f5",
-                   "horizon-blend": 0.08, "space-color": "#e6ecf5", "star-intensity": 0 });
+      try {
+        if (!map.getSource("mapbox-dem")) {
+          map.addSource("mapbox-dem", { type: "raster-dem", url: "mapbox://mapbox.mapbox-terrain-dem-v1", tileSize: 512, maxzoom: 14 });
+        }
+        map.setTerrain({ source: "mapbox-dem", exaggeration: 1.5 });
+      } catch (err) {
+        console.warn("DEM terrain disabled:", err);
+      }
+      try {
+        map.setFog({ range: [6, 18], color: "#eef1f6", "high-color": "#dbe6f5",
+                     "horizon-blend": 0.08, "space-color": "#e6ecf5", "star-intensity": 0 });
+      } catch {}
 
       // light-v11 renders land at ~99% lightness and water at ~86%, which on a white
       // neomorphic plane leaves the coastline and rivers invisible. Keep the pale land
@@ -95,18 +109,20 @@ export default function MapCanvas() {
       // Relief shading from the DEM we already load. Without it the pale basemap
       // reads as an empty white sheet; hillshade restores the valley/ridge structure
       // that explains where flood risk concentrates.
-      const firstSymbol = map.getStyle().layers.find((l) => l.type === "symbol")?.id;
-      if (!map.getLayer("hillshade")) {
-        map.addLayer({
-          id: "hillshade", type: "hillshade", source: "mapbox-dem",
-          paint: {
-            "hillshade-exaggeration": 0.9,
-            "hillshade-shadow-color": "#8ba3c2",
-            "hillshade-highlight-color": "#ffffff",
-            "hillshade-accent-color": "#a9bad0",
-          },
-        }, firstSymbol);
-      }
+      try {
+        const firstSymbol = map.getStyle().layers.find((l) => l.type === "symbol")?.id;
+        if (!map.getLayer("hillshade") && map.getSource("mapbox-dem")) {
+          map.addLayer({
+            id: "hillshade", type: "hillshade", source: "mapbox-dem",
+            paint: {
+              "hillshade-exaggeration": 0.9,
+              "hillshade-shadow-color": "#8ba3c2",
+              "hillshade-highlight-color": "#ffffff",
+              "hillshade-accent-color": "#a9bad0",
+            },
+          }, firstSymbol);
+        }
+      } catch {}
       // faint tint on vegetated/park land so it is not pure white
       ["landuse", "national-park"].forEach((id) => {
         if (!map.getLayer(id)) return;
