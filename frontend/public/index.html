@@ -1,157 +1,113 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FloodRoute AI | Dynamic Fleet Routing</title>
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Leaflet -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Custom Style -->
-    <link rel="stylesheet" href="static/style.css">
-</head>
-<body>
-    <div id="loader-overlay" class="loader-overlay">
-        <div class="loader-container">
-            <div class="spinner"></div>
-            <p id="loader-text">Initializing Systems...</p>
-            <div class="progress-bar-bg">
-                <div id="loader-progress" class="progress-bar-fill"></div>
-            </div>
-        </div>
-    </div>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#000000" />
+        <meta name="description" content="Orion — flood risk assessment and emergency response for Dakshina Kannada" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap" rel="stylesheet" />
+        <!--
+        manifest.json provides metadata used when your web app is installed on a
+        user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+        -->
+        <!--
+        Notice the use of %PUBLIC_URL% in the tags above.
+        It will be replaced with the URL of the `public` folder during the build.
+        Only files inside the `public` folder can be referenced from the HTML.
 
-    <div class="app-container">
-        <!-- Live Alert Banner -->
-        <div id="alert-banner" class="alert-banner hidden">
-            <span class="alert-icon">⚠️</span>
-            <span id="alert-text">SEVERE FLOOD RISK PREDICTED IN 3 HOURS</span>
-        </div>
+        Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+        work correctly both with client-side routing and a non-root public URL.
+        Learn how to configure a non-root public URL by running `npm run build`.
+        -->
+        <title>Orion</title>
+        <script>window.addEventListener("error",function(e){if(e.error instanceof DOMException&&e.error.name==="DataCloneError"&&e.message&&e.message.includes("PerformanceServerTiming")){e.stopImmediatePropagation();e.preventDefault()}},true);</script>
+        <script src="https://assets.emergent.sh/scripts/emergent-main.js"></script>
+    </head>
+    <body>
+        <noscript>You need to enable JavaScript to run this app.</noscript>
+        <div id="root"></div>
+        <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
 
-        <aside class="sidebar">
-            <div class="brand">
-                <div class="logo-circle"></div>
-                <h1>Flood-Aware <span class="accent">Routing System</span></h1>
-            </div>
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
 
-            <div class="sidebar-scroll">
-                <section class="sidebar-section">
-                    <h3>Environment Live Stats</h3>
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <span class="stat-label">Rainfall</span>
-                            <span id="stat-rain" class="stat-value">5.0</span>
-                            <span class="stat-unit">mm/h</span>
-                        </div>
-                        <div class="stat-card">
-                            <span class="stat-label">Tide Level</span>
-                            <span id="stat-sea" class="stat-value">1.2</span>
-                            <span class="stat-unit">m</span>
-                        </div>
-                    </div>
-                    <div class="meta-info">
-                        Last Refresh: <span id="last-refresh">--:--</span>
-                    </div>
-                </section>
-
-                <section class="sidebar-section">
-                    <h3>Ambulance Fleet Configuration</h3>
-                    <div class="fleet-control">
-                        <div class="control-header">
-                            <label>Active Units</label>
-                            <span id="amb-count-badge" class="count-badge">2</span>
-                        </div>
-                        <input type="range" id="amb-slider" min="1" max="6" value="2" class="count-slider">
-                    </div>
-
-                    <div class="feed-mode-toggle">
-                        <button id="mode-auto" class="mode-btn active">System Generated</button>
-                        <button id="mode-manual" class="mode-btn">Custom Feed</button>
-                    </div>
-
-                    <div id="custom-coords-container" class="custom-coords hidden">
-                        <!-- Dynamically populated -->
-                    </div>
-                </section>
-
-                <section class="sidebar-section">
-                    <h3>Optimization Logic</h3>
-                    <div class="logic-list">
-                        <div class="logic-item">
-                            <span class="logic-dot"></span>
-                            <span>Tsinghua v2 SSSP Algorithm</span>
-                        </div>
-                        <div class="logic-item">
-                            <span class="logic-dot"></span>
-                            <span>Tsinghua SSSP Research</span>
-                        </div>
-                        <div class="logic-item">
-                            <span class="logic-dot"></span>
-                            <span>Spatio-Temporal Fusion</span>
-                        </div>
-                        <div class="logic-item">
-                            <span class="logic-dot"></span>
-                            <span>Adaptive GA (QUBO)</span>
-                        </div>
-                    </div>
-                    <button id="run-btn" class="run-btn">
-                        <span class="btn-icon">⚡</span>
-                        Execute Research Optimization
-                    </button>
-                </section>
-
-                <section class="sidebar-section">
-                    <h3>Forecasting Timeline</h3>
-                    <div class="chart-container">
-                        <canvas id="weather-chart"></canvas>
-                    </div>
-                </section>
-
-                <section class="sidebar-section">
-                    <h3>Research Performance (ms)</h3>
-                    <div id="metrics-panel" class="metrics-grid">
-                        <div class="metric-card">
-                            <span class="metric-label">Dijkstra</span>
-                            <span id="bench-dijkstra" class="metric-value">--</span>
-                        </div>
-                        <div class="metric-card">
-                            <span class="metric-label">A*</span>
-                            <span id="bench-astar" class="metric-value">--</span>
-                        </div>
-                        <div class="metric-card">
-                            <span class="metric-label">Tsinghua v2 SSSP</span>
-                            <span id="bench-sv2" class="metric-value">--</span>
-                        </div>
-                        <div class="metric-card">
-                            <span class="metric-label">Genetic Algo</span>
-                            <span id="bench-ga" class="metric-value">--</span>
-                        </div>
-                    </div>
-                </section>
-            </div>
-        </aside>
-
-        <main class="main-view">
-            <div id="map"></div>
-            
-            <!-- Route Details Floating Panel -->
-            <div id="route-panel" class="route-panel hidden">
-                <div class="panel-header">
-                    <h4>Optimization Breakdown</h4>
-                    <button id="close-panel">×</button>
-                </div>
-                <div id="route-cards-container" class="route-cards">
-                    <!-- Cards populated by JS -->
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- Tooltip mapping -->
-    <script src="static/script.js"></script>
-</body>
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+        <script>
+            !(function (t, e) {
+                var o, n, p, r;
+                e.__SV ||
+                    ((window.posthog = e),
+                    (e._i = []),
+                    (e.init = function (i, s, a) {
+                        function g(t, e) {
+                            var o = e.split(".");
+                            2 == o.length && ((t = t[o[0]]), (e = o[1])),
+                                (t[e] = function () {
+                                    t.push(
+                                        [e].concat(
+                                            Array.prototype.slice.call(
+                                                arguments,
+                                                0,
+                                            ),
+                                        ),
+                                    );
+                                });
+                        }
+                        ((p = t.createElement("script")).type =
+                            "text/javascript"),
+                            (p.crossOrigin = "anonymous"),
+                            (p.async = !0),
+                            (p.src =
+                                s.api_host.replace(
+                                    ".i.posthog.com",
+                                    "-assets.i.posthog.com",
+                                ) + "/static/array.js"),
+                            (r =
+                                t.getElementsByTagName(
+                                    "script",
+                                )[0]).parentNode.insertBefore(p, r);
+                        var u = e;
+                        for (
+                            void 0 !== a ? (u = e[a] = []) : (a = "posthog"),
+                                u.people = u.people || [],
+                                u.toString = function (t) {
+                                    var e = "posthog";
+                                    return (
+                                        "posthog" !== a && (e += "." + a),
+                                        t || (e += " (stub)"),
+                                        e
+                                    );
+                                },
+                                u.people.toString = function () {
+                                    return u.toString(1) + ".people (stub)";
+                                },
+                                o =
+                                    "init me ws ys ps bs capture je Di ks register register_once register_for_session unregister unregister_for_session Ps getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey canRenderSurveyAsync identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty Es $s createPersonProfile Is opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing Ss debug xs getPageViewId captureTraceFeedback captureTraceMetric".split(
+                                        " ",
+                                    ),
+                                n = 0;
+                            n < o.length;
+                            n++
+                        )
+                            g(u, o[n]);
+                        e._i.push([i, s, a]);
+                    }),
+                    (e.__SV = 1));
+            })(document, window.posthog || []);
+            posthog.init("phc_DbsPb39SRc8z3EiQ6Dhj6ikv4H4rTKcht9d4sZSesceP", {
+                api_host: "https://ap.emergent.sh",
+                person_profiles: "identified_only", // or 'always' to create profiles for anonymous users as well,
+                session_recording: {
+                    recordCrossOriginIframes: true,
+                    capturePerformance: false,
+                },
+            });
+        </script>
+    </body>
 </html>

@@ -1,0 +1,26 @@
+{
+  "generated": "2026-09-11T08:20:50.634919+00:00",
+  "region": "Dakshina Kannada administrative district",
+  "graph": {
+    "nodes": 25407,
+    "edges": 59501,
+    "flood_prone_edges": 9886,
+    "flood_prone_pct": 16.61
+  },
+  "live": {
+    "T": 0.012,
+    "antecedent": {
+      "1h": 0.0,
+      "6h": 0.5,
+      "24h": 0.9,
+      "72h": 4.5
+    }
+  },
+  "scenarios": {
+    "dry": 0.0,
+    "live": 0.012,
+    "aug2024": 0.39,
+    "may2025": 0.7,
+    "flash5": 0.85
+  }
+}
