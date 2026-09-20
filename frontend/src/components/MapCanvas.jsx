@@ -14,9 +14,33 @@ const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN || "";
 if (MAPBOX_TOKEN) {
   mapboxgl.accessToken = MAPBOX_TOKEN;
 }
-const STYLE = MAPBOX_TOKEN 
-  ? "mapbox://styles/mapbox/light-v11" 
-  : "https://basemaps.cartocdn.com/gl/positron-gl-style/json";
+
+const OSM_STYLE = {
+  version: 8,
+  sources: {
+    "osm-raster-tiles": {
+      type: "raster",
+      tiles: [
+        "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        "https://b.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        "https://c.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      ],
+      tileSize: 256,
+      attribution: "© OpenStreetMap contributors"
+    }
+  },
+  layers: [
+    {
+      id: "osm-raster-layer",
+      type: "raster",
+      source: "osm-raster-tiles",
+      minzoom: 0,
+      maxzoom: 19
+    }
+  ]
+};
+
+const STYLE = MAPBOX_TOKEN ? "mapbox://styles/mapbox/light-v11" : OSM_STYLE;
 
 const EMPTY = { type: "FeatureCollection", features: [] };
 const ROAD_COLOR = ["interpolate", ["linear"], ["get", "s"],
@@ -75,8 +99,8 @@ export default function MapCanvas() {
   useEffect(() => {
     if (mapRef.current) return;
     const map = new mapboxgl.Map({
-      container: containerRef.current, style: STYLE, center: [75.20, 12.82],
-      zoom: 8.75, pitch: 38, bearing: -10, antialias: true, maxPitch: 80,
+      container: containerRef.current, style: STYLE, center: [74.84, 12.87],
+      zoom: 11, pitch: 30, bearing: 0, antialias: true, maxPitch: 80,
     });
     mapRef.current = map;
     if (process.env.NODE_ENV !== "production") window.__orionMap = map;  // dev introspection
@@ -87,42 +111,38 @@ export default function MapCanvas() {
     ro.observe(containerRef.current);
 
     map.on("style.load", async () => {
-      try {
-        if (!map.getSource("mapbox-dem")) {
-          map.addSource("mapbox-dem", { type: "raster-dem", url: "mapbox://mapbox.mapbox-terrain-dem-v1", tileSize: 512, maxzoom: 14 });
+      if (MAPBOX_TOKEN) {
+        try {
+          if (!map.getSource("mapbox-dem")) {
+            map.addSource("mapbox-dem", { type: "raster-dem", url: "mapbox://mapbox.mapbox-terrain-dem-v1", tileSize: 512, maxzoom: 14 });
+          }
+          map.setTerrain({ source: "mapbox-dem", exaggeration: 1.5 });
+        } catch (err) {
+          console.warn("DEM terrain disabled:", err);
         }
-        map.setTerrain({ source: "mapbox-dem", exaggeration: 1.5 });
-      } catch (err) {
-        console.warn("DEM terrain disabled:", err);
+        try {
+          map.setFog({ range: [6, 18], color: "#eef1f6", "high-color": "#dbe6f5",
+                       "horizon-blend": 0.08, "space-color": "#e6ecf5", "star-intensity": 0 });
+        } catch {}
+
+        if (map.getLayer("water")) map.setPaintProperty("water", "fill-color", "#a8c4e2");
+        if (map.getLayer("waterway")) map.setPaintProperty("waterway", "line-color", "#8fb0d6");
+
+        try {
+          const firstSymbol = map.getStyle().layers.find((l) => l.type === "symbol")?.id;
+          if (!map.getLayer("hillshade") && map.getSource("mapbox-dem")) {
+            map.addLayer({
+              id: "hillshade", type: "hillshade", source: "mapbox-dem",
+              paint: {
+                "hillshade-exaggeration": 0.9,
+                "hillshade-shadow-color": "#8ba3c2",
+                "hillshade-highlight-color": "#ffffff",
+                "hillshade-accent-color": "#a9bad0",
+              },
+            }, firstSymbol);
+          }
+        } catch {}
       }
-      try {
-        map.setFog({ range: [6, 18], color: "#eef1f6", "high-color": "#dbe6f5",
-                     "horizon-blend": 0.08, "space-color": "#e6ecf5", "star-intensity": 0 });
-      } catch {}
-
-      // light-v11 renders land at ~99% lightness and water at ~86%, which on a white
-      // neomorphic plane leaves the coastline and rivers invisible. Keep the pale land
-      // (it suits the theme) but give water enough weight to read as water.
-      if (map.getLayer("water")) map.setPaintProperty("water", "fill-color", "#a8c4e2");
-      if (map.getLayer("waterway")) map.setPaintProperty("waterway", "line-color", "#8fb0d6");
-
-      // Relief shading from the DEM we already load. Without it the pale basemap
-      // reads as an empty white sheet; hillshade restores the valley/ridge structure
-      // that explains where flood risk concentrates.
-      try {
-        const firstSymbol = map.getStyle().layers.find((l) => l.type === "symbol")?.id;
-        if (!map.getLayer("hillshade") && map.getSource("mapbox-dem")) {
-          map.addLayer({
-            id: "hillshade", type: "hillshade", source: "mapbox-dem",
-            paint: {
-              "hillshade-exaggeration": 0.9,
-              "hillshade-shadow-color": "#8ba3c2",
-              "hillshade-highlight-color": "#ffffff",
-              "hillshade-accent-color": "#a9bad0",
-            },
-          }, firstSymbol);
-        }
-      } catch {}
       // faint tint on vegetated/park land so it is not pure white
       ["landuse", "national-park"].forEach((id) => {
         if (!map.getLayer(id)) return;
